@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="de">
+    <style>
+        /* --- Grundeinstellungen & Variablen --- */
+        :root {
+            --primary-red: #b61f29; 
+            --secondary-grey: #8a8d8f;
+            --bg-color: #f9f9f9;
+            --card-bg: #ffffff;
+            --text-color: #0f2f37;
+
+/* --- NEUE PASTELL-FARBVARIABLEN (10 Stück) --- */
+--pastel-1: #e1f5fe;   /* Eis-Blau */
+    --pastel-2: #e8f5e9;   /* Mint-Grün */
+    --pastel-3: #fffde7;   /* Cremiges Gelb */
+    --pastel-4: #fce4ec;   /* Puder-Rosa */
+    --pastel-5: #f3e5f5;   /* Blasser Lavendel */
+    --pastel-6: #fff3e0;   /* Pfirsich-Creme */
+    --pastel-7: #efebe9;   /* Licht-Grau */
+    --pastel-8: #e0f7fa;   /* Azur-Weiß */
+    --pastel-9: #f1f8e9;   /* Helles Limette */
+    --pastel-10: #fbe9e7;  /* Helles Koralle */
+        }
+
+        body {
+            font-family: 'Nunito Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- Header & Logo --- */
+        header {
+            background-color: white;
+            padding: 0rem 0rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* --- Hauptinhalt --- */
+        main {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 20px;
+            width: 60%;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-red);
+            font-weight: 500;
+            margin-bottom: 40px;
+font-family: 'Nunito Sans', sans-serif;
+        }
+
+        /* --- Das Kachel-Raster (Grid) --- */
+        .tile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        /* --- Design der Kacheln --- */
+        .tile {
+            background-color: var(--bg-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-decoration: none;
+            color: var(--text-color);
+            padding: 30px;
+            /* Hinzufügen einer Custom-Property für die Hover-Farbe */
+            --tile-hover-color: var(--primary-red);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+font-family: 'Nunito Sans', sans-serif;
+            border-bottom: 4px solid transparent; 
+        }
+
+        /* --- Pastellfarben (1 bis 10) --- */
+.tile-color-1 { background-color: var(--pastel-1) !important; --tile-hover-color: #0288d1; } /* Dunkles Blau */
+.tile-color-2 { background-color: var(--pastel-2) !important; --tile-hover-color: #558b2f; } /* Dunkles Grün */
+.tile-color-3 { background-color: var(--pastel-3) !important; --tile-hover-color: #fdd835; } /* Dunkles Gelb */
+.tile-color-4 { background-color: var(--pastel-4) !important; --tile-hover-color: #d81b60; } /* Dunkles Pink */
+.tile-color-5 { background-color: var(--pastel-5) !important; --tile-hover-color: #8e24aa; } /* Dunkles Violett */
+.tile-color-6 { background-color: var(--pastel-6) !important; --tile-hover-color: #fb8c00; } /* Dunkles Orange */
+.tile-color-7 { background-color: var(--pastel-7) !important; --tile-hover-color: #6d4c41; } /* Dunkles Braun */
+.tile-color-8 { background-color: var(--pastel-8) !important; --tile-hover-color: #00bcd4; } /* Dunkles Cyan */
+.tile-color-9 { background-color: var(--pastel-9) !important; --tile-hover-color: #afb42b; } /* Dunkles Limette */
+.tile-color-10 { background-color: var(--pastel-10) !important; --tile-hover-color: #ff5722; } /* Dunkle Koralle */
+
+        .tile:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(15,47,55,0.5);
+            /* Verwendet die kachelspezifische Hover-Farbe */
+            border-bottom: 3px solid var(--tile-hover-color);
+        }
+
+        .tile h2 {
+            margin-top: 10px;
+            color: var(--text-color);
+            font-size: 1.3rem; 
+            margin-bottom: 0;
+        }
+
+        /* --- Design der Metacom-Platzhalter Bilder --- */
+        .tile-img {
+            width: 100px; 
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 5px; 
+            border: 2px solid var(--secondary-grey); 
+            border-radius: 8px;
+            padding: 5px;
+            background-color: white;
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #b61f29;
+            color: white;
+            margin-top: auto;
+            font-size: 0.9rem;
+font-family: 'Nunito Sans', sans-serif;
+        }
+    </style>
+</head>
+<link rel="manifest" href="manifest.json">
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="header.jpg" alt="Studjo Logo Arbeit und Qualifizierung">
+        </div>
+    </header>
+    <main>
+        <h1><b>Herzlich Willkommen am Studjo | Terminal!</b></h1>
+
+        <div class="tile-grid">   
+            <a href="werkstattordnung.html" target="_self" class="tile tile-color-1">
+                <img src="Werkstatt.jpg" alt="Ordnung Icon" class="tile-img">
+                <h2>Werkstattordnung</h2>
+            </a>
+
+            <a href="regeln.html" target="_self" class="tile tile-color-2">
+                <img src="Regeln.jpg" alt="Regeln Icon" class="tile-img">
+                <h2>Regeln</h2>
+            </a>
+
+            <a href="speiseplan.html" target="_self" class="tile tile-color-3">
+                <img src="Essen.jpg" alt="Speiseplan Icon" class="tile-img">
+                <h2>Speiseplan</h2>
+            </a>
+
+            <a href="verhaltenbeikonflikten.html" target="_self" class="tile tile-color-4">
+                <img src="Gewalt.jpg" alt="Stop Icon" class="tile-img">
+                <h2>Gewaltschutz</h2>
+            </a>
+
+            <a href="https://001sdbfevm-660.johanneswerk.int/Company/News/Personal" target="_blank" class="tile tile-color-5">
+                <img src="Information.jpg" alt="Info Icon" class="tile-img">
+                <h2>Neuigkeiten</h2>
+            </a>
+
+            <a href="wrfb.html" target="_self" class="tile tile-color-6">
+                <img src="Werkstattrat.jpg" alt="Info Icon" class="tile-img">
+                <h2>Werkstattrat und Frauenbeauftragte</h2>
+            </a>
+
+            <a href="infofilme.html" target="_self" class="tile tile-color-7">
+                <img src="Filme.jpg" alt="Film Icon" class="tile-img">
+                <h2>Info-Filme</h2>
+            </a>
+
+            <a href="arbeitssicherheit.html" target="_self" class="tile tile-color-10">
+                <img src="Arbeitssicherheit.jpg" alt="Sicherheit Icon" class="tile-img">
+                <h2>Arbeitssicherheit</h2>
+            </a>
+            
+            </div>
+    </main>
+
+    <footer>
+        &copy; 2024 <b>Studjo | Arbeit und Qualifizierung</b> | Infoterminal | Barrierefreier Zugang
+    </footer>
+
+</body>
+</html>
+
+<script>navigator.serviceWorker.register('sw.js');</script>
