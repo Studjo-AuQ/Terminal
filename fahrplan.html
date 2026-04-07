@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>VRR Fahrplanauskunft – einfache Bedienung</title>
+<title>Bus und Bahn – einfache Fahrplanauskunft</title>
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -28,35 +28,35 @@
         font-size: 18px;
         border-radius: 8px;
         border: none;
-        background-color: #009640;
+        background-color: #007acc;
         color: white;
         cursor: pointer;
     }
     button:hover {
-        background-color: #007a34;
+        background-color: #005fa3;
     }
 </style>
 </head>
 <body>
 
-<h1>Bus und Bahn im VRR</h1>
+<h1>Bus und Bahn Verbindung finden</h1>
 
-<p>Bitte gib deine Start-Adresse ein.</p>
+<p>Bitte geben Sie Ihre Start-Adresse ein.</p>
 
 <input type="text" id="start" placeholder="Zum Beispiel: Meine Straße 1, Ort">
 
 <p>Dann wählen Sie ein Ziel.</p>
 
-<button onclick="routeVRR('Auf der Heide 24, Bochum')">Auf der Heide</button>
-<button onclick="routeVRR('Dannenbaumstraße 63, Bochum')">Dannenbaumstraße</button>
-<button onclick="routeVRR('Freisenbergstraße 33, Lüdenscheid')">Freisenbergstraße</button>
-<button onclick="routeVRR('Wefelshohler Straße 48, Lüdenscheid')">Wefelshohler Straße</button>
-<button onclick="routeVRR('Kerkhagen 22, Lüdenscheid')">Kerkhagen</button>
-<button onclick="routeVRR('Am Funkenhof 1, Kierspe')">Kierspe</button>
-<button onclick="routeVRR('Gewerbestraße 10, Werdohl')">Werdohl</button>
+<button onclick="route('Auf der Heide 24, 44803 Bochum')">Auf der Heide</button>
+<button onclick="route('Dannenbaumstraße 63, 44803 Bochum')">Dannenbaumstraße</button>
+<button onclick="route('Freisenbergstraße 33, 58513 Lüdenscheid')">Freisenbergstraße</button>
+<button onclick="route('Wefelshohler Straße 48, 58511 Lüdenscheid')">Wefelshohler Straße</button>
+<button onclick="route('Kerkhagen 22, 58513 Lüdenscheid')">Kerkhagen</button>
+<button onclick="route('Am Funkenhof 1, 58566 Kierspe')">Kierspe</button>
+<button onclick="route('Gewerbestraße 10, 58791 Werdohl')">Werdohl</button>
 
 <script>
-function routeVRR(ziel) {
+function route(ziel) {
     let start = document.getElementById("start").value;
 
     if (!start) {
@@ -64,10 +64,10 @@ function routeVRR(ziel) {
         return;
     }
 
-    let url = "https://efa.vrr.de/vrr/XSLT_TRIP_REQUEST2?"
-        + "language=de"
-        + "&name_origin=" + encodeURIComponent(start)
-        + "&name_destination=" + encodeURIComponent(ziel);
+    let url = "https://www.google.com/maps/dir/?api=1"
+        + "&origin=" + encodeURIComponent(start)
+        + "&destination=" + encodeURIComponent(ziel)
+        + "&travelmode=transit";
 
     window.open(url, "_blank");
 }
