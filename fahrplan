@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Fahrplanauskunft Studjo Standorte</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        select, input, button {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            max-width: 400px;
+        }
+        button {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Fahrplanauskunft (ÖPNV)</h1>
+
+<label for="start">Startadresse eingeben:</label><br>
+<input type="text" id="start" placeholder="z. B. Meine Adresse">
+
+<br>
+
+<label for="ziel">Ziel auswählen:</label><br>
+<select id="ziel">
+    <option value="Auf der Heide 24, 44803 Bochum">Betriebsstätte Auf der Heide</option>
+    <option value="Dannenbaumstraße 63, 44803 Bochum">Betriebsstätte Dannenbaumstraße</option>
+    <option value="Freisenbergstraße 33, 58513 Lüdenscheid">Betriebsstätte Freisenbergstraße</option>
+    <option value="Wefelshohler Straße 48, 58511 Lüdenscheid">Betriebsstätte Wefelshohler Straße</option>
+    <option value="Kerkhagen 22, 58513 Lüdenscheid">Betriebsstätte Kerkhagen</option>
+    <option value="Am Funkenhof 1, 58566 Kierspe">Betriebsstätte Kierspe</option>
+    <option value="Gewerbestraße 10, 58791 Werdohl">Betriebsstätte Werdohl</option>
+</select>
+
+<br>
+
+<button onclick="routePlanen()">Route anzeigen</button>
+<button onclick="meinStandort()">Mein Standort verwenden</button>
+
+<script>
+function routePlanen() {
+    let start = document.getElementById("start").value;
+    let ziel = document.getElementById("ziel").value;
+
+    if (!start) {
+        alert("Bitte Startadresse eingeben oder 'Mein Standort' nutzen.");
+        return;
+    }
+
+    let url = "https://www.google.com/maps/dir/?api=1"
+        + "&origin=" + encodeURIComponent(start)
+        + "&destination=" + encodeURIComponent(ziel)
+        + "&travelmode=transit";
+
+    window.open(url, "_blank");
+}
+
+function meinStandort() {
+    let ziel = document.getElementById("ziel").value;
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            let lat = position.coords.latitude;
+            let lon = position.coords.longitude;
+
+            let url = "https://www.google.com/maps/dir/?api=1"
+                + "&origin=" + lat + "," + lon
+                + "&destination=" + encodeURIComponent(ziel)
+                + "&travelmode=transit";
+
+            window.open(url, "_blank");
+        }, function() {
+            alert("Standort konnte nicht ermittelt werden.");
+        });
+    } else {
+        alert("Geolocation wird nicht unterstützt.");
+    }
+}
+</script>
+
+</body>
+</html>
