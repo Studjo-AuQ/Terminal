@@ -6,6 +6,36 @@
     <title>Studjo Terminal</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+/* Der äußere Container: Versteckt alles, was über den Rand hinausgeht */
+    .ticker-container {
+        width: 100%;
+        overflow: hidden;
+        background-color: #004488; /* Hintergrundfarbe */
+        color: white;              /* Textfarbe */
+        padding: 10px 0;
+        white-space: nowrap;       /* Verhindert Zeilenumbrüche */
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    /* Der Text, der animiert wird */
+    .ticker-text {
+        display: inline-block;
+        padding-left: 100%; /* Startet ganz rechts außerhalb des Bildschirms */
+        animation: ticker 20s linear infinite; /* 20s ist die Geschwindigkeit */
+    }
+
+    /* Zusatz-Feature: Pausiert die Laufleiste, wenn man mit der Maus darüberfährt */
+    .ticker-container:hover .ticker-text {
+        animation-play-state: paused;
+    }
+
+    /* Die eigentliche Bewegung von rechts nach links */
+    @keyframes ticker {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-100%); }
+    }
+        
         /* --- Grundeinstellungen & Variablen --- */
         :root {
             --primary-red: #b61f29; 
@@ -175,6 +205,12 @@
 
     <main id="readable-content">
         <h1>Herzlich Willkommen am Studjo | Terminal!</h1>
+
+        <div class="ticker-container">
+        <div class="ticker-text">
+            +++ Eilmeldung: Dies ist eine einfache, kostenlose und werbefreie Info-Laufleiste! +++ Nächste Meldung: Alles funktioniert perfekt! +++
+        </div>
+    </div>
 
         <div class="tile-grid">   
             <a href="werkstattordnung.html" class="tile tile-color-1">
