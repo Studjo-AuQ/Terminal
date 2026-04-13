@@ -320,6 +320,47 @@ mark.reading-highlight {
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js');
         }
+
+        function readAndHighlight() {
+    // 1. Text-Container finden und den Original-Text speichern
+    const textContainer = document.getElementById('content-to-read');
+    const originalText = textContainer.innerText;
+
+    // 2. Laufende Sprachausgabe sicherheitshalber stoppen
+    window.speechSynthesis.cancel();
+
+    // 3. Vorlese-Auftrag erstellen
+    const utterance = new SpeechSynthesisUtterance(originalText);
+    utterance.lang = 'de-DE'; // Deutsche Stimme
+    utterance.rate = 0.9;     // Etwas langsamere Sprechgeschwindigkeit
+
+    // 4. Event-Listener: Jedes Mal, wenn ein neues Wort beginnt...
+    utterance.addEventListener('boundary', function(event) {
+        if (event.name === 'word') {
+            // Finde heraus, wo das Wort anfängt und wie lang es ist
+            const wordStart = event.charIndex;
+            const wordLength = event.charLength;
+            const wordEnd = wordStart + wordLength;
+
+            // Text in drei Teile schneiden: Davor, das aktuelle Wort, Danach
+            const textBefore = originalText.slice(0, wordStart);
+            const currentWord = originalText.slice(wordStart, wordEnd);
+            const textAfter = originalText.slice(wordEnd);
+
+            // Das aktuelle Wort in ein <mark>-Tag einpacken und ins HTML schreiben
+            textContainer.innerHTML = textBefore + '<mark class="reading-highlight">' + currentWord + '</mark>' + textAfter;
+        }
+    });
+
+    // 5. Wenn das Vorlesen fertig ist (oder abgebrochen wird), Text wieder normal anzeigen
+    utterance.addEventListener('end', function() {
+        textContainer.innerHTML = originalText;
+    });
+
+    // 6. Vorlesen starten!
+    window.speechSynthesis.speak(utterance);
+}
+        
     </script>
 </body>
 </html>
