@@ -135,7 +135,63 @@
             padding: 5px;
             background-color: white;
         }
+/* 🔴 NEUER CODE AB HIER: CSS für den Button und das Highlighting 🔴 */
+        .read-aloud-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
 
+        .btn-read-aloud {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--primary-red);
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s, background-color 0.2s;
+            padding: 10px;
+        }
+
+        .btn-read-aloud:hover {
+            transform: scale(1.1);
+            background-color: #d42430;
+        }
+
+        .btn-read-aloud img {
+            width: 45px;
+            height: 45px;
+            margin-bottom: 2px;
+        }
+
+        .btn-read-aloud span {
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .is-reading {
+            background-color: #ffe600 !important;
+            color: black !important;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(255, 230, 0, 0.8) !important;
+            transform: scale(1.05);
+            transition: all 0.3s ease;
+        }
+        /* 🔴 ENDE NEUER CODE 🔴 */
+
+		
         /* --- Footer --- */
         footer {
             text-align: center;
@@ -192,6 +248,85 @@
     <footer>
         &copy; 2024 <b>Studjo | Arbeit und Qualifizierung</b> | Infoterminal | Barrierefreier Zugang
     </footer>
+<script>
+        let isSpeaking = false;
+        let aktuelleAussage = null; 
 
+        function vorlesenUndMarkieren() {
+            if (isSpeaking || window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                entferneAlleMarkierungen();
+                isSpeaking = false;
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+            isSpeaking = true;
+
+            const elementeZumVorlesen = [];
+
+            const h1 = document.querySelector('h1');
+            if (h1 && h1.innerText.trim() !== "") {
+                elementeZumVorlesen.push({ text: h1.innerText, element: h1 });
+            }
+
+            elementeZumVorlesen.push({ text: "Hier gibt es folgende Bereiche:", element: null });
+
+            const tiles = document.querySelectorAll('.tile');
+            tiles.forEach(tile => {
+                const h2 = tile.querySelector('h2');
+                if (h2 && h2.innerText.trim() !== "") {
+                    elementeZumVorlesen.push({ text: h2.innerText, element: tile });
+                }
+            });
+
+            if (elementeZumVorlesen.length > 0) {
+                spieleSequenz(elementeZumVorlesen, 0);
+            } else {
+                isSpeaking = false;
+            }
+        }
+
+        function spieleSequenz(elemente, index) {
+            if (index >= elemente.length || !isSpeaking) {
+                entferneAlleMarkierungen();
+                isSpeaking = false;
+                return; 
+            }
+
+            const abschnitt = elemente[index];
+            
+            aktuelleAussage = new SpeechSynthesisUtterance(abschnitt.text);
+            aktuelleAussage.lang = 'de-DE';
+            aktuelleAussage.rate = 0.9; 
+
+            aktuelleAussage.onstart = () => {
+                entferneAlleMarkierungen();
+                if (abschnitt.element) {
+                    abschnitt.element.classList.add('is-reading');
+                }
+            };
+
+            aktuelleAussage.onend = () => {
+                setTimeout(() => {
+                    spieleSequenz(elemente, index + 1);
+                }, 150);
+            };
+
+            aktuelleAussage.onerror = (event) => {
+                console.error("Fehler beim Vorlesen:", event);
+                entferneAlleMarkierungen();
+                isSpeaking = false;
+            };
+
+            window.speechSynthesis.speak(aktuelleAussage);
+        }
+
+        function entferneAlleMarkierungen() {
+            document.querySelectorAll('.is-reading').forEach(el => {
+                el.classList.remove('is-reading');
+            });
+        }
+    </script>
 </body>
 </html>
