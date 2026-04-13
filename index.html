@@ -6,36 +6,36 @@
     <title>Studjo Terminal</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-/* Der äußere Container: Versteckt alles, was über den Rand hinausgeht */
-    .ticker-container {
-        width: 100%;
-        overflow: hidden;
-        background-color: var(--bg-color); /* Hintergrundfarbe JW hellgrau */
-        color: var(--primary-red);              /* Textfarbe JW rot */
-        padding: 10px 0;
-        white-space: nowrap;       /* Verhindert Zeilenumbrüche */
-        box-sizing: border-box;
-        font-family: Calibri, sans-serif;
-        font-size: 24px;
-    }
+        /* Der äußere Container: Versteckt alles, was über den Rand hinausgeht */
+        .ticker-container {
+            width: 100%;
+            overflow: hidden;
+            background-color: var(--bg-color); /* Hintergrundfarbe JW hellgrau */
+            color: var(--primary-red);         /* Textfarbe JW rot */
+            padding: 10px 0;
+            white-space: nowrap;       /* Verhindert Zeilenumbrüche */
+            box-sizing: border-box;
+            font-family: Calibri, sans-serif;
+            font-size: 24px;
+        }
 
-    /* Der Text, der animiert wird */
-    .ticker-text {
-        display: inline-block;
-        padding-left: 100%; /* Startet ganz rechts außerhalb des Bildschirms */
-        animation: ticker 20s linear infinite; /* 20s ist die Geschwindigkeit */
-    }
+        /* Der Text, der animiert wird */
+        .ticker-text {
+            display: inline-block;
+            padding-left: 100%; /* Startet ganz rechts außerhalb des Bildschirms */
+            animation: ticker 20s linear infinite; /* 20s ist die Geschwindigkeit */
+        }
 
-    /* Zusatz-Feature: Pausiert die Laufleiste, wenn man mit der Maus darüberfährt */
-    .ticker-container:hover .ticker-text {
-        animation-play-state: paused;
-    }
+        /* Zusatz-Feature: Pausiert die Laufleiste, wenn man mit der Maus darüberfährt */
+        .ticker-container:hover .ticker-text {
+            animation-play-state: paused;
+        }
 
-    /* Die eigentliche Bewegung von rechts nach links */
-    @keyframes ticker {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-100%); }
-    }
+        /* Die eigentliche Bewegung von rechts nach links */
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
         
         /* --- Grundeinstellungen & Variablen --- */
         :root {
@@ -85,6 +85,7 @@
             color: var(--primary-red);
             font-weight: 700;
             margin-bottom: 0px;
+            padding: 10px; /* Ein wenig Padding, damit das Highlight bei h1 besser aussieht */
         }
 
         /* --- Das Kachel-Raster --- */
@@ -139,7 +140,7 @@
             background-color: white;
         }
 
-        /* --- VORLESEN BUTTON (NEU) --- */
+        /* --- VORLESEN BUTTON --- */
         .read-aloud-container {
             position: fixed;
             bottom: 30px;
@@ -185,13 +186,15 @@
             text-transform: uppercase;
         }
 
-/* Das ist die Farbe, in der das aktuelle Wort leuchtet */
-mark.reading-highlight {
-    background-color: #ffe600; /* Gelb */
-    color: black;
-    border-radius: 3px;
-    padding: 0 2px;
-}
+        /* --- HIGHLIGHTING BEIM VORLESEN (NEU) --- */
+        .is-reading {
+            background-color: #ffe600 !important;
+            color: black !important;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(255, 230, 0, 0.8) !important;
+            transform: scale(1.05); /* Kachel wird beim Vorlesen minimal größer */
+            transition: all 0.3s ease;
+        }
         
         /* --- Footer --- */
         footer {
@@ -211,23 +214,15 @@ mark.reading-highlight {
             <img src="header.jpg" alt="Studjo Logo">
         </div>
     </header>
-<div id="content-to-read">
-    
 
-<div class="read-aloud-container">
-    <button class="btn-read-aloud" onclick="readAndHighlight()">
-        <img src="symbol.png" alt="" aria-hidden="true">
-        <span>Vorlesen</span>
-    </button>
-</div>
     <main id="readable-content">
         <h1>Herzlich willkommen am Studjo | Terminal</h1>
 
         <div class="ticker-container">
-        <div class="ticker-text">
-            +++ Studjo|Terminal nun online +++ Tipp: Checke das Mittagessen +++
+            <div class="ticker-text">
+                +++ Studjo|Terminal nun online +++ Tipp: Checke das Mittagessen +++
+            </div>
         </div>
-    </div>
 
         <div class="tile-grid">   
             <a href="werkstattordnung.html" class="tile tile-color-1">
@@ -288,87 +283,15 @@ mark.reading-highlight {
     </main>
 
     <div class="read-aloud-container">
-        <button class="btn-read-aloud" onclick="vorlesen()" title="Seite vorlesen">
+        <button class="btn-read-aloud" onclick="vorlesenUndMarkieren()" title="Seite vorlesen">
             <img src="zuhoeren.jpg" alt="Ohr-Symbol">
             <span>Vorlesen</span>
         </button>
-    </div></div>
+    </div>
 
     <footer>
         &copy; 2024 <b>Studjo | Arbeit und Qualifizierung</b> | Infoterminal
     </footer>
 
     <script>
-        function vorlesen() {
-            // Falls er gerade schon spricht -> Stoppen (Toggle-Funktion)
-            if (window.speechSynthesis.speaking) {
-                window.speechSynthesis.cancel();
-                return;
-            }
-
-            // Den gesamten Text sammeln
-            const h1Text = document.querySelector('h1').innerText;
-            const tiles = document.querySelectorAll('.tile h2');
-            let tilesText = " Hier gibt es folgende Bereiche: ";
-            
-            tiles.forEach(tile => {
-                tilesText += tile.innerText + ", ";
-            });
-
-            const gesamtText = h1Text + "." + tilesText;
-
-            const aussage = new SpeechSynthesisUtterance(gesamtText);
-            aussage.lang = 'de-DE';
-            aussage.rate = 0.9; // Etwas langsamer für bessere Verständlichkeit
-            
-            window.speechSynthesis.speak(aussage);
-        }
-
-        // Service Worker
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
-        }
-
-        function readAndHighlight() {
-    // 1. Text-Container finden und den Original-Text speichern
-    const textContainer = document.getElementById('content-to-read');
-    const originalText = textContainer.innerText;
-
-    // 2. Laufende Sprachausgabe sicherheitshalber stoppen
-    window.speechSynthesis.cancel();
-
-    // 3. Vorlese-Auftrag erstellen
-    const utterance = new SpeechSynthesisUtterance(originalText);
-    utterance.lang = 'de-DE'; // Deutsche Stimme
-    utterance.rate = 0.9;     // Etwas langsamere Sprechgeschwindigkeit
-
-    // 4. Event-Listener: Jedes Mal, wenn ein neues Wort beginnt...
-    utterance.addEventListener('boundary', function(event) {
-        if (event.name === 'word') {
-            // Finde heraus, wo das Wort anfängt und wie lang es ist
-            const wordStart = event.charIndex;
-            const wordLength = event.charLength;
-            const wordEnd = wordStart + wordLength;
-
-            // Text in drei Teile schneiden: Davor, das aktuelle Wort, Danach
-            const textBefore = originalText.slice(0, wordStart);
-            const currentWord = originalText.slice(wordStart, wordEnd);
-            const textAfter = originalText.slice(wordEnd);
-
-            // Das aktuelle Wort in ein <mark>-Tag einpacken und ins HTML schreiben
-            textContainer.innerHTML = textBefore + '<mark class="reading-highlight">' + currentWord + '</mark>' + textAfter;
-        }
-    });
-
-    // 5. Wenn das Vorlesen fertig ist (oder abgebrochen wird), Text wieder normal anzeigen
-    utterance.addEventListener('end', function() {
-        textContainer.innerHTML = originalText;
-    });
-
-    // 6. Vorlesen starten!
-    window.speechSynthesis.speak(utterance);
-}
-        
-    </script>
-</body>
-</html>
+        // Variable,
