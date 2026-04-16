@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AbA</title>
-    <link rel="stylesheet" href="style.css">    
+    <link rel="stylesheet" href="style.css"> 
+    <script src="script.js" defer></script>
 </head>
 <body>
 
@@ -40,85 +41,6 @@
     <footer>
         &copy; 2024 <b>Studjo | Arbeit und Qualifizierung</b> | Infoterminal | Barrierefreier Zugang
     </footer>
-<script>
-        let isSpeaking = false;
-        let aktuelleAussage = null; 
-
-        function vorlesenUndMarkieren() {
-            if (isSpeaking || window.speechSynthesis.speaking) {
-                window.speechSynthesis.cancel();
-                entferneAlleMarkierungen();
-                isSpeaking = false;
-                return;
-            }
-
-            window.speechSynthesis.cancel();
-            isSpeaking = true;
-
-            const elementeZumVorlesen = [];
-
-            const h1 = document.querySelector('h1');
-            if (h1 && h1.innerText.trim() !== "") {
-                elementeZumVorlesen.push({ text: h1.innerText, element: h1 });
-            }
-
-            elementeZumVorlesen.push({ text: "Hier gibt es folgende Bereiche:", element: null });
-
-            const tiles = document.querySelectorAll('.tile');
-            tiles.forEach(tile => {
-                const h2 = tile.querySelector('h2');
-                if (h2 && h2.innerText.trim() !== "") {
-                    elementeZumVorlesen.push({ text: h2.innerText, element: tile });
-                }
-            });
-
-            if (elementeZumVorlesen.length > 0) {
-                spieleSequenz(elementeZumVorlesen, 0);
-            } else {
-                isSpeaking = false;
-            }
-        }
-
-        function spieleSequenz(elemente, index) {
-            if (index >= elemente.length || !isSpeaking) {
-                entferneAlleMarkierungen();
-                isSpeaking = false;
-                return; 
-            }
-
-            const abschnitt = elemente[index];
-            
-            aktuelleAussage = new SpeechSynthesisUtterance(abschnitt.text);
-            aktuelleAussage.lang = 'de-DE';
-            aktuelleAussage.rate = 0.9; 
-
-            aktuelleAussage.onstart = () => {
-                entferneAlleMarkierungen();
-                if (abschnitt.element) {
-                    abschnitt.element.classList.add('is-reading');
-                }
-            };
-
-            aktuelleAussage.onend = () => {
-                setTimeout(() => {
-                    spieleSequenz(elemente, index + 1);
-                }, 150);
-            };
-
-            aktuelleAussage.onerror = (event) => {
-                console.error("Fehler beim Vorlesen:", event);
-                entferneAlleMarkierungen();
-                isSpeaking = false;
-            };
-
-            window.speechSynthesis.speak(aktuelleAussage);
-        }
-
-        function entferneAlleMarkierungen() {
-            document.querySelectorAll('.is-reading').forEach(el => {
-                el.classList.remove('is-reading');
-            });
-        }
-    </script>
+    
 </body>
 </html>
