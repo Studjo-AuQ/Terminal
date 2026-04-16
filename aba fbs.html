@@ -745,7 +745,7 @@ function render() {
         const headerStyle = istHeute ? ' style="background-color:#8b161e;"' : '';
 
         daysHtml += `<div class="day-column">
-            <div class="day-header"${headerStyle}>${tagName}${istHeute ? ' ★' : ''}<br><span style="font-size:0.8rem;font-weight:400;opacity:0.85">${fmtDate(tagDatum)}</span></div>
+            <div class="day-header"${headerStyle}>${tagName}${istHeute ? ' 🟢' : ''}<br><span style="font-size:0.8rem;font-weight:400;opacity:0.85">${fmtDate(tagDatum)}</span></div>
             <div class="day-offers">`;
 
         if (heutigeAngebote.length === 0) {
