@@ -50,5 +50,28 @@
         &copy; 2024 <b>Studjo | Arbeit und Qualifizierung</b> | Infoterminal | Barrierefreier Zugang
     </footer>
 <script src="script.js" defer></script>
+      <script>
+        (function() {
+            // KONFIGURATION
+            // Setze hier den Montag ein, an dem der Link die Endung ":0" hatte
+            const startReferenz = new Date("2026-03-23"); 
+            const basisURL = "https://001sdbfevm-660.johanneswerk.int/Manual/WebViewer?OID=D67363000:";
+
+            const heute = new Date();
+            const msProWoche = 604800000; // 7 Tage in Millisekunden
+            
+            // Berechne vergangene Wochen seit Startdatum
+            const wochenIndex = Math.floor((heute - startReferenz) / msProWoche);
+
+            // Links im HTML aktualisieren
+            const ids = ["link-woche-0", "link-woche-1", "link-woche-2"];
+            ids.forEach((id, index) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.href = basisURL + (wochenIndex + index);
+                }
+            });
+        })();
+    </script>     
 </body>
 </html>
