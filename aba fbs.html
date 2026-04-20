@@ -266,24 +266,28 @@
         }
  /* --- Icons in Angebotskachel --- */
 .offer-img {
-            position: absolute; /* Löst das Bild aus dem Textfluss */
-            bottom: 10px;       /* Abstand von unten */
-            right: 12px;        /* Abstand von rechts */
-            width: 36px;        /* Kleineres Icon */
-            height: 36px;
+            width: 34px;
+            height: 34px;
             object-fit: cover;
             border-radius: 6px;
-            border: 1px solid rgba(0,0,0,0.1);
-            background-color: white; /* Falls das Icon mal transparent ist */
-            box-shadow: 0 1px 4px rgba(0,0,0,0.1); /* Lässt das Icon leicht hervortreten */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
         }
 
         .offer-card-inner {
-            display: block; /* Flexbox deaktiviert, der Text nutzt nun die volle Breite */
+            display: block; /* Nimmt das Bild aus dem alten Layout heraus */
         }
 
         .offer-card-text {
-            padding-right: 48px; /* 36px Icon + 12px Abstand zum Rand */
+            width: 100%; /* Text bekommt wieder die volle Breite */
+        }
+
+        /* NEUE KLASSE: Sortiert Badge nach links und Icon nach rechts */
+        .offer-bottom-row {
+            display: flex;
+            justify-content: space-between; 
+            align-items: flex-end; 
+            margin-top: 8px;
+            min-height: 34px;
         }
         
         /* --- Vorlesen-Button --- */
@@ -709,7 +713,6 @@ const KATEGORIE_LABELS = {
     special:    'Besonders'
 };
 
-// DIESE ZEILE HAT GEFEHLT:
 function renderOfferCard(angebot) {
     const zielBadge = angebot.zielgruppe === 'AuTmo'
         ? '<span class="target-badge autmo">AuTmo</span>'
@@ -728,13 +731,17 @@ function renderOfferCard(angebot) {
     return `
         <div class="offer-card cat-${angebot.kategorie}">
             <div class="offer-card-inner">
-                ${bildHtml}
                 <div class="offer-card-text">
                     <div class="offer-name">${angebot.name}${zielBadge}</div>
                     <div class="offer-time">🕐 ${angebot.zeit}</div>
                     ${anbieterHtml}
                     <div class="offer-time">📍 ${angebot.treffpunkt}</div>
-                    <span class="offer-badge">${KATEGORIE_LABELS[angebot.kategorie] || angebot.kategorie}</span>
+                    
+                    <div class="offer-bottom-row">
+                        <span class="offer-badge">${KATEGORIE_LABELS[angebot.kategorie] || angebot.kategorie}</span>
+                        ${bildHtml}
+                    </div>
+                    
                 </div>
             </div>
         </div>`;
