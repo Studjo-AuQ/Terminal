@@ -708,7 +708,9 @@ const KATEGORIE_LABELS = {
     special:    'Besonders'
 };
 
-const zielBadge = angebot.zielgruppe === 'AuTmo'
+// DIESE ZEILE HAT GEFEHLT:
+function renderOfferCard(angebot) {
+    const zielBadge = angebot.zielgruppe === 'AuTmo'
         ? '<span class="target-badge autmo">AuTmo</span>'
         : angebot.zielgruppe === 'MontagePlus'
             ? '<span class="target-badge mopl">MontagePlus</span>'
