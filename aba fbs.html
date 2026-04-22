@@ -539,21 +539,44 @@ function vorlesenUndMarkieren() {
     isSpeaking = true;
 
     const elementeZumVorlesen = [];
+
+    // 1. Hauptüberschrift (optional)
     const h1 = document.querySelector('h1');
     if (h1) elementeZumVorlesen.push({ text: h1.innerText, element: h1 });
 
-    const weekBadge = document.getElementById('week-badge');
-    const weekDates = document.getElementById('week-dates');
-    if (weekBadge) elementeZumVorlesen.push({ text: 'Woche ' + weekBadge.innerText + ', ' + weekDates.innerText, element: weekBadge.parentElement });
+    // 2. Wir suchen gezielt die Spalte des heutigen Tages!
+    // Der Code sucht alle Tages-Spalten und nimmt die, die das "🟢" Symbol im Titel hat.
+    const alleSpalten = Array.from(document.querySelectorAll('.day-column'));
+    const heuteSpalte = alleSpalten.find(spalte => spalte.querySelector('.day-header').innerText.includes('🟢'));
 
-    elementeZumVorlesen.push({ text: 'Diese Woche gibt es folgende Angebote:', element: null });
+    if (heuteSpalte) {
+        // Den Namen des Tages schön sauber auslesen (z.B. "Montag 🟢" wird zu "Montag")
+        let tagesName = heuteSpalte.querySelector('.day-header').innerText.split('\n')[0];
+        tagesName = tagesName.replace(/🟢/g, '').replace(/HEUTE:/g, '').trim();
 
-    document.querySelectorAll('.offer-card').forEach(card => {
-        const name = card.querySelector('.offer-name')?.innerText || '';
-        const zeit = card.querySelector('.offer-time')?.innerText || '';
-        if (name) elementeZumVorlesen.push({ text: name + '. ' + zeit, element: card });
-    });
+        // Einleitungssatz
+        elementeZumVorlesen.push({ text: `Heute ist ${tagesName}. Es gibt heute folgende Angebote:`, element: null });
 
+        // JETZT GANZ WICHTIG: Wir suchen nur noch die Kacheln INNERHALB der "heuteSpalte"!
+        const angeboteHeute = heuteSpalte.querySelectorAll('.offer-card');
+
+        if (angeboteHeute.length === 0) {
+            // Falls die Spalte leer ist
+            elementeZumVorlesen.push({ text: 'Heute finden leider keine Angebote statt.', element: null });
+        } else {
+            // Falls es Angebote gibt, lesen wir nur diese vor
+            angeboteHeute.forEach(card => {
+                const name = card.querySelector('.offer-name')?.innerText || '';
+                const zeit = card.querySelector('.offer-time')?.innerText || '';
+                if (name) elementeZumVorlesen.push({ text: name + '. ' + zeit, element: card });
+            });
+        }
+    } else {
+        // Wenn keine "🟢"-Spalte gefunden wurde (weil Samstag oder Sonntag ist)
+        elementeZumVorlesen.push({ text: 'Heute ist Wochenende. Es finden keine regelmäßigen Angebote statt.', element: null });
+    }
+
+    // 3. Vorlesen starten
     if (elementeZumVorlesen.length > 0) spieleSequenz(elementeZumVorlesen, 0);
     else isSpeaking = false;
 }
