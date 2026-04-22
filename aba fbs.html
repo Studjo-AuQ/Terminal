@@ -561,11 +561,31 @@ function vorlesenUndMarkieren() {
         if (angeboteHeute.length === 0) {
             elementeZumVorlesen.push({ text: 'Heute finden leider keine Angebote statt.', element: null });
         } else {
-            // Angebote vorlesen
+            // Angebote menschlicher und natürlicher vorlesen lassen
             angeboteHeute.forEach(card => {
-                const name = card.querySelector('.offer-name')?.innerText || '';
-                const zeit = card.querySelector('.offer-time')?.innerText || '';
-                if (name) elementeZumVorlesen.push({ text: name + '. ' + zeit, element: card });
+                let name = card.querySelector('.offer-name')?.innerText || '';
+                let zeit = card.querySelector('.offer-time')?.innerText || '';
+
+                if (name) {
+                    // 1. Das Emoji 🕐 entfernen (sonst liest der Browser heimlich "Ein Uhr" vor!)
+                    zeit = zeit.replace(/🕐/g, '');
+                    
+                    // 2. Text säubern: "11:00 – 12:00 Uhr" -> "11:00 bis 12:00"
+                    let sprechZeit = zeit.replace(/Uhr/gi, '')       // Das "Uhr" am Ende weglassen
+                                         .replace(/[–-]/g, ' bis ')  // Den Strich durch "bis" ersetzen
+                                         .trim();
+                    
+                    // 3. Doppelpunkte auflösen für natürliche Sprechweise
+                    sprechZeit = sprechZeit.replace(/:00/g, ' Uhr')
+                                           .replace(/:15/g, ' Uhr 15')
+                                           .replace(/:30/g, ' Uhr 30')
+                                           .replace(/:45/g, ' Uhr 45');
+
+                    // 4. Satzbau umstellen (Ohne Punkt nach dem Namen, damit "2" nicht zu "Zweite" wird)
+                    let sprechText = `${name} ist von ${sprechZeit}.`;
+
+                    elementeZumVorlesen.push({ text: sprechText, element: card });
+                }
             });
         }
     } else {
