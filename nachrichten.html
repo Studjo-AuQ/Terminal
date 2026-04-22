@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studjo Terminal – Nachrichten</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Grundeinstellungen & Variablen --- */
+        :root {
+            --primary-red: #b61f29;
+            --secondary-grey: #8a8d8f;
+            --bg-color: #f9f9f9;
+            --text-color: #0f2f37;
+        }
+
+        body {
+            font-family: 'Nunito Sans', sans-serif;
+            margin: 0; padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex; flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: white;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .logo-container { max-width: 1200px; margin: 0 auto; }
+        .logo-container img { width: 100%; height: auto; display: block; }
+
+        /* --- Hauptinhalt --- */
+        main {
+            flex: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 95%;
+            box-sizing: border-box;
+            padding-bottom: 120px;
+        }
+
+        /* --- Raster für den Kopfbereich --- */
+        .top-header-area {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: start;
+            margin-bottom: 30px;
+        }
+        .top-header-text {
+            grid-column: 2;
+            text-align: center;
+        }
+        h1 {
+            color: var(--primary-red);
+            font-weight: 700;
+            margin: 0 0 12px 0;
+            font-size: 2.2rem;
+        }
+
+        /* --- Zurück-Button --- */
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: white;
+            color: var(--primary-red);
+            border: 2px solid var(--primary-red);
+            border-radius: 999px;
+            padding: 8px 20px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: all 0.2s;
+        }
+        .btn-back:hover { background-color: var(--primary-red); color: white; }
+
+        /* --- Nachrichten-Raster --- */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        /* --- Nachrichten-Karte --- */
+        .news-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border-bottom: 5px solid var(--primary-red);
+        }
+
+        .news-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background-color: #eee; /* Platzhalter-Farbe, falls kein Bild lädt */
+        }
+
+        .news-content {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .news-date {
+            color: var(--primary-red);
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .news-title {
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin: 0 0 12px 0;
+            line-height: 1.3;
+            color: #222;
+        }
+
+        .news-text {
+            font-size: 1rem;
+            color: #555;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Lade-Anzeige */
+        #loading-message {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            padding: 40px;
+            grid-column: 1 / -1;
+        }
+
+        /* --- Vorlesen & Hervorhebung --- */
+        .is-reading {
+            background-color: #ffe600 !important;
+            color: black !important;
+            box-shadow: 0 0 15px rgba(255, 230, 0, 0.8) !important;
+            transform: scale(1.02);
+            transition: all 0.3s ease;
+        }
+
+        .read-aloud-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+        .btn-read-aloud {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background-color: var(--primary-red);
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .btn-read-aloud:hover { transform: scale(1.1); background-color: #d42430; }
+        .btn-read-aloud img { width: 45px; height: 45px; margin-bottom: 2px; }
+        .btn-read-aloud span { color: white; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="header.jpg" alt="Studjo Logo"> 
+        </div>
+    </header>
+
+    <main>
+        <div class="top-header-area">
+            <div></div> <div class="top-header-text">
+                <h1>Nachrichten Leicht</h1>
+                <div style="margin-bottom: 12px;">
+                    <a href="index.html" class="btn-back">← Zurück zur Startseite</a>
+                </div>
+                <p style="color:var(--secondary-grey); margin:0; font-size:1.0rem; font-weight:500;">
+                    Aktuelle Meldungen in Leichter Sprache
+                </p>
+            </div>
+
+            <div></div> </div>
+
+        <div class="news-grid" id="news-grid">
+            <div id="loading-message">Nachrichten werden geladen... Bitte warten.</div>
+        </div>
+
+    </main>
+
+    <div class="read-aloud-container">
+        <button class="btn-read-aloud" onclick="vorlesenUndMarkieren()" title="Seite vorlesen">
+            <img src="zuhoeren.jpg" alt="Ohr-Symbol">
+            <span>Vorlesen</span>
+        </button>
+    </div>
+
+    <script>
+        // =====================================================================
+        // NACHRICHTEN LADEN (RSS FEED via Proxy)
+        // =====================================================================
+        
+        // Die RSS-Feed URL des Deutschlandfunks / Nachrichtenleicht
+        const rssFeedUrl = 'https://www.deutschlandfunk.de/nachrichtenleicht-nachrichten-100.rss';
+        
+        // Wir nutzen die kostenlose rss2json API, um den Feed für Javascript lesbar zu machen (umgeht die iFrame Sperre!)
+        const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssFeedUrl)}`;
+
+        document.addEventListener("DOMContentLoaded", ladeNachrichten);
+
+        function ladeNachrichten() {
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const grid = document.getElementById('news-grid');
+                    grid.innerHTML = ''; // Lade-Text entfernen
+
+                    if (data.status !== 'ok' || !data.items || data.items.length === 0) {
+                        grid.innerHTML = '<div id="loading-message">Nachrichten konnten leider nicht geladen werden.</div>';
+                        return;
+                    }
+
+                    // Wir zeigen maximal die 6 aktuellsten Nachrichten an, damit es nicht zu unübersichtlich wird
+                    const topNews = data.items.slice(0, 6);
+
+                    topNews.forEach(item => {
+                        // Datum leserlich machen
+                        const dateObj = new Date(item.pubDate);
+                        const options = { day: '2-digit', month: 'long', year: 'numeric' };
+                        const lesbaresDatum = dateObj.toLocaleDateString('de-DE', options);
+
+                        // Thumbnail / Bild (Falls im Feed vorhanden, ansonsten Platzhalter-Grau)
+                        let imageUrl = item.thumbnail || item.enclosure?.link;
+                        let imageHtml = imageUrl ? `<img src="${imageUrl}" alt="Nachrichtenbild" class="news-img">` : '';
+
+                        // Kurze Zusammenfassung bereinigen (entfernt eventuelle HTML-Reste aus dem Text)
+                        let textInhalt = item.description.replace(/<[^>]*>?/gm, '').trim();
+
+                        // HTML-Struktur für eine Nachrichtenkachel bauen
+                        const cardHtml = `
+                            <div class="news-card">
+                                ${imageHtml}
+                                <div class="news-content">
+                                    <div class="news-date">${lesbaresDatum}</div>
+                                    <h2 class="news-title">${item.title}</h2>
+                                    <p class="news-text">${textInhalt}</p>
+                                </div>
+                            </div>
+                        `;
+                        
+                        grid.innerHTML += cardHtml;
+                    });
+                })
+                .catch(error => {
+                    console.error('Fehler beim Laden der Nachrichten:', error);
+                    document.getElementById('news-grid').innerHTML = '<div id="loading-message">Fehler beim Verbinden mit den Nachrichten. Bitte später erneut versuchen.</div>';
+                });
+        }
+
+        // =====================================================================
+        // VORLESEN
+        // =====================================================================
+        let isSpeaking = false;
+        let aktuelleAussage = null;
+
+        function vorlesenUndMarkieren() {
+            if (isSpeaking || window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                entferneAlleMarkierungen();
+                isSpeaking = false;
+                return;
+            }
+            window.speechSynthesis.cancel();
+            isSpeaking = true;
+
+            const elementeZumVorlesen = [];
+
+            // Begrüßung
+            elementeZumVorlesen.push({ text: "Hier sind die aktuellen Nachrichten in Leichter Sprache.", element: null });
+
+            // Alle geladenen Nachrichten suchen
+            const karten = document.querySelectorAll('.news-card');
+            
+            if(karten.length === 0) {
+                elementeZumVorlesen.push({ text: "Momentan können keine Nachrichten vorgelesen werden.", element: null });
+            } else {
+                karten.forEach((card, index) => {
+                    const titel = card.querySelector('.news-title')?.innerText || '';
+                    const text = card.querySelector('.news-text')?.innerText || '';
+                    const datum = card.querySelector('.news-date')?.innerText || '';
+
+                    // Baut einen runden Vorlese-Satz
+                    const sprechText = `Meldung vom ${datum}. ${titel}. ${text}.`;
+                    
+                    elementeZumVorlesen.push({ text: sprechText, element: card });
+                });
+                
+                elementeZumVorlesen.push({ text: "Das waren die aktuellen Nachrichten.", element: null });
+            }
+
+            if (elementeZumVorlesen.length > 0) spieleSequenz(elementeZumVorlesen, 0);
+            else isSpeaking = false;
+        }
+
+        function spieleSequenz(elemente, index) {
+            if (index >= elemente.length || !isSpeaking) {
+                entferneAlleMarkierungen();
+                isSpeaking = false;
+                return;
+            }
+            const abschnitt = elemente[index];
+            aktuelleAussage = new SpeechSynthesisUtterance(abschnitt.text);
+            aktuelleAussage.lang = 'de-DE';
+            aktuelleAussage.rate = 0.85; // Ein kleines bisschen langsamer für Nachrichten
+            aktuelleAussage.onstart = () => {
+                entferneAlleMarkierungen();
+                if (abschnitt.element) abschnitt.element.classList.add('is-reading');
+            };
+            aktuelleAussage.onend = () => {
+                // Kurze Pause zwischen den Nachrichten lassen (600 Millisekunden)
+                setTimeout(() => spieleSequenz(elemente, index + 1), 600);
+            };
+            aktuelleAussage.onerror = () => {
+                entferneAlleMarkierungen();
+                isSpeaking = false;
+            };
+            window.speechSynthesis.speak(aktuelleAussage);
+        }
+
+        function entferneAlleMarkierungen() {
+            document.querySelectorAll('.is-reading').forEach(el => el.classList.remove('is-reading'));
+        }
+    </script>
+</body>
+</html>
