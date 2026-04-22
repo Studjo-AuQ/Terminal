@@ -102,7 +102,7 @@
             width: 100%;
             height: 200px;
             object-fit: cover;
-            background-color: #eee; /* Platzhalter-Farbe, falls kein Bild lädt */
+            background-color: #eee;
         }
 
         .news-content {
@@ -134,15 +134,6 @@
             color: #555;
             line-height: 1.6;
             margin: 0;
-        }
-
-        /* Lade-Anzeige */
-        #loading-message {
-            text-align: center;
-            font-size: 1.2rem;
-            color: #666;
-            padding: 40px;
-            grid-column: 1 / -1;
         }
 
         /* --- Vorlesen & Hervorhebung --- */
@@ -200,7 +191,25 @@
             <div></div> </div>
 
         <div class="news-grid" id="news-grid">
-            <div id="loading-message">Nachrichten werden geladen... Bitte warten.</div>
+            
+            <div class="news-card">
+                <img src="https://www.nachrichtenleicht.de/nachrichtenleicht-logo-100~_v-cv16_9_w-360_s-a7d16.jpg" alt="Nachrichtenbild" class="news-img">
+                <div class="news-content">
+                    <div class="news-date">22. April 2026</div>
+                    <h2 class="news-title">Allgemeine Nachrichten möglich</h2>
+                    <p class="news-text">Hier könnten zukünftig allgemeine Nachrichten in Leichter Sprache stehen.</p>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <img src="Werkstattrat.jpg" alt="Nachrichtenbild" class="news-img">
+                <div class="news-content">
+                    <div class="news-date">22. April 2026</div>
+                    <h2 class="news-title">Infos vom Werkstattrat</h2>
+                    <p class="news-text">Vielleicht möchte der Werkstattrat von Zeit zu Zeit diese Kachel nutzen...</p>
+                </div>
+            </div>
+
         </div>
 
     </main>
@@ -213,68 +222,8 @@
     </div>
 
     <script>
-       // =====================================================================
-        // NACHRICHTEN LADEN (Letzter Versuch via CORS-Proxy)
         // =====================================================================
-        
-        const zielUrl = 'https://www.tagesschau.de/api2/search/?searchText=Einfache+Sprache';
-        const apiUrl = 'https://corsproxy.io/?' + encodeURIComponent(zielUrl);
-
-        document.addEventListener("DOMContentLoaded", ladeNachrichten);
-
-        function ladeNachrichten() {
-            fetch(apiUrl)
-                .then(response => {
-                    if (!response.ok) throw new Error('Netzwerk blockiert.');
-                    return response.json();
-                })
-                .then(data => {
-                    const grid = document.getElementById('news-grid');
-                    grid.innerHTML = ''; 
-
-                    const einfacheNews = data.searchResults.filter(item => item.title && item.title.includes('Einfache Sprache'));
-
-                    if (einfacheNews.length === 0) {
-                        grid.innerHTML = '<div id="loading-message">Aktuell keine Nachrichten gefunden.</div>';
-                        return;
-                    }
-
-                    const topNews = einfacheNews.slice(0, 6);
-
-                    topNews.forEach(item => {
-                        const dateObj = new Date(item.date);
-                        const lesbaresDatum = dateObj.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' });
-
-                        let imageUrl = '';
-                        if (item.teaserImage && item.teaserImage.imageVariants) {
-                            imageUrl = item.teaserImage.imageVariants['16x9-512'] || item.teaserImage.imageVariants['16x9-1920'] || '';
-                        }
-                        let imageHtml = imageUrl ? `<img src="${imageUrl}" alt="Nachrichtenbild" class="news-img">` : '';
-
-                        let textInhalt = item.details || item.firstSentence || "Nachrichten der Tagesschau in Einfacher Sprache.";
-                        textInhalt = textInhalt.replace(/<[^>]*>?/gm, '').trim();
-
-                        const cardHtml = `
-                            <div class="news-card">
-                                ${imageHtml}
-                                <div class="news-content">
-                                    <div class="news-date">${lesbaresDatum}</div>
-                                    <h2 class="news-title">${item.title}</h2>
-                                    <p class="news-text">${textInhalt}</p>
-                                </div>
-                            </div>
-                        `;
-                        grid.innerHTML += cardHtml;
-                    });
-                })
-                .catch(error => {
-                    console.error('Ladefehler:', error);
-                    document.getElementById('news-grid').innerHTML = '<div id="loading-message" style="color:var(--primary-red); font-weight:bold;">Sicherheitsrichtlinien blockieren den Abruf. Bitte manuelle Version nutzen.</div>';
-                });
-        }
-
-        // =====================================================================
-        // VORLESEN
+        // VORLESEN (Perfekt abgestimmt auf die manuellen Kacheln)
         // =====================================================================
         let isSpeaking = false;
         let aktuelleAussage = null;
@@ -291,26 +240,21 @@
 
             const elementeZumVorlesen = [];
 
-            // Begrüßung
             elementeZumVorlesen.push({ text: "Hier sind die aktuellen Nachrichten in Leichter Sprache.", element: null });
 
-            // Alle geladenen Nachrichten suchen
             const karten = document.querySelectorAll('.news-card');
             
             if(karten.length === 0) {
-                elementeZumVorlesen.push({ text: "Momentan können keine Nachrichten vorgelesen werden.", element: null });
+                elementeZumVorlesen.push({ text: "Momentan sind keine neuen Nachrichten verfügbar.", element: null });
             } else {
-                karten.forEach((card, index) => {
+                karten.forEach((card) => {
                     const titel = card.querySelector('.news-title')?.innerText || '';
                     const text = card.querySelector('.news-text')?.innerText || '';
                     const datum = card.querySelector('.news-date')?.innerText || '';
 
-                    // Baut einen runden Vorlese-Satz
                     const sprechText = `Meldung vom ${datum}. ${titel}. ${text}.`;
-                    
                     elementeZumVorlesen.push({ text: sprechText, element: card });
                 });
-                
                 elementeZumVorlesen.push({ text: "Das waren die aktuellen Nachrichten.", element: null });
             }
 
@@ -327,13 +271,12 @@
             const abschnitt = elemente[index];
             aktuelleAussage = new SpeechSynthesisUtterance(abschnitt.text);
             aktuelleAussage.lang = 'de-DE';
-            aktuelleAussage.rate = 0.85; // Ein kleines bisschen langsamer für Nachrichten
+            aktuelleAussage.rate = 0.85; 
             aktuelleAussage.onstart = () => {
                 entferneAlleMarkierungen();
                 if (abschnitt.element) abschnitt.element.classList.add('is-reading');
             };
             aktuelleAussage.onend = () => {
-                // Kurze Pause zwischen den Nachrichten lassen (600 Millisekunden)
                 setTimeout(() => spieleSequenz(elemente, index + 1), 600);
             };
             aktuelleAussage.onerror = () => {
