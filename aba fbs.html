@@ -135,6 +135,12 @@
             box-shadow: 0 3px 8px rgba(0,0,0,0.08);
             overflow: hidden;
         }
+        /* NEU: Hebt die Spalte des aktuellen Tages hervor */
+        .heute-column {
+            border: 3px solid var(--primary-red);
+            transform: scale(1.02); /* Macht die Spalte 2% größer */
+            box-shadow: 0 6px 15px rgba(182, 31, 41, 0.2); /* Roter Schatten */
+        }
 
         .day-header {
             background-color: var(--primary-red);
@@ -797,9 +803,15 @@ function render() {
         const heutigeAngebote = ANGEBOTE.filter(a => a.wochentag === wt && findetStatt(a, wochenMontag));
 
         const headerStyle = istHeute ? ' style="background-color:#8b161e;"' : '';
+        
+        // NEU: Gibt der Spalte eine Extraklaase "heute-column", wenn heute ist
+        const columnClass = istHeute ? 'day-column heute-column' : 'day-column'; 
+        
+        // NEU: Baut den Titel mit zwei Kreisen und dem Wort "HEUTE"
+        const anzeigeTag = istHeute ? `🟢 HEUTE: ${tagName} 🟢` : tagName;
 
-        daysHtml += `<div class="day-column">
-            <div class="day-header"${headerStyle}>${tagName}${istHeute ? ' 🟢' : ''}<br><span style="font-size:0.8rem;font-weight:400;opacity:0.85">${fmtDate(tagDatum)}</span></div>
+        daysHtml += `<div class="${columnClass}">
+            <div class="day-header"${headerStyle}>${anzeigeTag}<br><span style="font-size:0.8rem;font-weight:400;opacity:0.85">${fmtDate(tagDatum)}</span></div>
             <div class="day-offers">`;
 
         if (heutigeAngebote.length === 0) {
