@@ -540,31 +540,28 @@ function vorlesenUndMarkieren() {
 
     const elementeZumVorlesen = [];
 
-    // 1. Hauptüberschrift (optional)
+    // 1. Hauptüberschrift
     const h1 = document.querySelector('h1');
     if (h1) elementeZumVorlesen.push({ text: h1.innerText, element: h1 });
 
-    // 2. Wir suchen gezielt die Spalte des heutigen Tages!
-    // Der Code sucht alle Tages-Spalten und nimmt die, die das "🟢" Symbol im Titel hat.
-    const alleSpalten = Array.from(document.querySelectorAll('.day-column'));
-    const heuteSpalte = alleSpalten.find(spalte => spalte.querySelector('.day-header').innerText.includes('🟢'));
+    // 2. Die heutige Spalte direkt und zielsicher über die CSS-Klasse greifen!
+    const heuteSpalte = document.querySelector('.heute-column');
 
     if (heuteSpalte) {
-        // Den Namen des Tages schön sauber auslesen (z.B. "Montag 🟢" wird zu "Montag")
+        // Den Namen des Tages sauber auslesen (z.B. "Montag")
         let tagesName = heuteSpalte.querySelector('.day-header').innerText.split('\n')[0];
         tagesName = tagesName.replace(/🟢/g, '').replace(/HEUTE:/g, '').trim();
 
         // Einleitungssatz
         elementeZumVorlesen.push({ text: `Heute ist ${tagesName}. Es gibt heute folgende Angebote:`, element: null });
 
-        // JETZT GANZ WICHTIG: Wir suchen nur noch die Kacheln INNERHALB der "heuteSpalte"!
+        // NUR die Kacheln innerhalb der heutigen Spalte suchen
         const angeboteHeute = heuteSpalte.querySelectorAll('.offer-card');
 
         if (angeboteHeute.length === 0) {
-            // Falls die Spalte leer ist
             elementeZumVorlesen.push({ text: 'Heute finden leider keine Angebote statt.', element: null });
         } else {
-            // Falls es Angebote gibt, lesen wir nur diese vor
+            // Angebote vorlesen
             angeboteHeute.forEach(card => {
                 const name = card.querySelector('.offer-name')?.innerText || '';
                 const zeit = card.querySelector('.offer-time')?.innerText || '';
@@ -572,7 +569,7 @@ function vorlesenUndMarkieren() {
             });
         }
     } else {
-        // Wenn keine "🟢"-Spalte gefunden wurde (weil Samstag oder Sonntag ist)
+        // Wenn keine heute-column da ist
         elementeZumVorlesen.push({ text: 'Heute ist Wochenende. Es finden keine regelmäßigen Angebote statt.', element: null });
     }
 
