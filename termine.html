@@ -153,8 +153,36 @@
         .event-card {
             border-radius: 8px;
             padding: 12px 15px;
+            
+            /* NEU: Wir machen rechts 55 Pixel Platz, damit der Text nicht unter das Bild rutscht */
+            padding-right: 55px; 
+            
             border-left: 4px solid #ccc;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            
+            /* NEU: Das ist der Ankerpunkt für die absolute Positionierung des Bildes */
+            position: relative; 
+            min-height: 55px; /* Sichert ab, dass die Kachel hoch genug für das Bild ist */
+        }
+
+        /* NEU: Der Behälter für die Bilder (oben rechts in die Ecke getackert) */
+        .bst-icon-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 4px; /* Abstand, falls mal 2 Bilder nebeneinander stehen */
+        }
+
+        /* NEU: Das Aussehen des kleinen Betriebsstätten-Bildes */
+        .bst-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            background-color: white;
         }
 
         .event-date {
@@ -419,6 +447,55 @@
     </div>
 
     <script>
+// =====================================================================
+        // AUTOMATISCHE BILDERKENNUNG FÜR BETRIEBSSTÄTTEN
+        // =====================================================================
+        document.addEventListener("DOMContentLoaded", function() {
+            // Unsere "Wörterbuch" Liste. 
+            // Wenn eines der Keywords im Text auftaucht, wird das zugeordnete Bild geladen.
+            const standorte = [
+                { keywords: ['freisenberg'], bild: 'bst-fbs.jpg' },
+                { keywords: ['wefelshohl'], bild: 'bst-whs.jpg' },
+                { keywords: ['kerkhagen'], bild: 'bst-kh.jpg' },
+                { keywords: ['werdohl'], bild: 'bst-wd.jpg' },
+                { keywords: ['kierspe'], bild: 'bst-ki.jpg' },
+                { keywords: ['dannenbaum'], bild: 'bst-db.jpg' },
+                { keywords: ['auf der heide', 'heide'], bild: 'bst-adh.jpg' }
+            ];
+
+            const karten = document.querySelectorAll('.event-card');
+            
+            karten.forEach(card => {
+                // Den gesamten Text der jeweiligen Kachel auslesen und in Kleinbuchstaben verwandeln
+                const text = card.innerText.toLowerCase();
+                let gefundeneBilder = [];
+
+                // Prüfen, ob eine Betriebsstätte im Text vorkommt
+                standorte.forEach(standort => {
+                    const gefunden = standort.keywords.some(kw => text.includes(kw));
+                    if (gefunden) {
+                        gefundeneBilder.push(standort.bild);
+                    }
+                });
+
+                // Wenn Bilder gefunden wurden, fügen wir sie oben rechts ein
+                if (gefundeneBilder.length > 0) {
+                    const iconContainer = document.createElement('div');
+                    iconContainer.className = 'bst-icon-container';
+                    
+                    gefundeneBilder.forEach(bildSrc => {
+                        const img = document.createElement('img');
+                        img.src = bildSrc;
+                        img.className = 'bst-icon';
+                        img.alt = 'Foto Betriebsstätte';
+                        iconContainer.appendChild(img);
+                    });
+                    
+                    card.appendChild(iconContainer);
+                }
+            });
+        });
+        
         let isSpeaking = false;
         let aktuelleAussage = null;
 
