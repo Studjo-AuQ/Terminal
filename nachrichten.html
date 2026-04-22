@@ -214,26 +214,24 @@
 
     <script>
        // =====================================================================
-        // NACHRICHTEN LADEN (Offizielle Tagesschau API)
+        // NACHRICHTEN LADEN (Letzter Versuch via CORS-Proxy)
         // =====================================================================
         
-        // Wir durchsuchen die offene API der Tagesschau gezielt nach "Einfache Sprache"
-        const apiUrl = 'https://www.tagesschau.de/api2/search/?searchText=Einfache+Sprache';
+        const zielUrl = 'https://www.tagesschau.de/api2/search/?searchText=Einfache+Sprache';
+        const apiUrl = 'https://corsproxy.io/?' + encodeURIComponent(zielUrl);
 
         document.addEventListener("DOMContentLoaded", ladeNachrichten);
 
         function ladeNachrichten() {
             fetch(apiUrl)
                 .then(response => {
-                    if (!response.ok) throw new Error('Netzwerkfehler');
+                    if (!response.ok) throw new Error('Netzwerk blockiert.');
                     return response.json();
                 })
                 .then(data => {
                     const grid = document.getElementById('news-grid');
                     grid.innerHTML = ''; 
 
-                    // Wir filtern die Suchergebnisse zur Sicherheit, damit auch wirklich nur 
-                    // die Sendungen in Einfacher Sprache durchkommen
                     const einfacheNews = data.searchResults.filter(item => item.title && item.title.includes('Einfache Sprache'));
 
                     if (einfacheNews.length === 0) {
@@ -241,24 +239,19 @@
                         return;
                     }
 
-                    // Wir zeigen die aktuellsten 6 Meldungen
                     const topNews = einfacheNews.slice(0, 6);
 
                     topNews.forEach(item => {
-                        // Datum leserlich machen
                         const dateObj = new Date(item.date);
-                        const options = { day: '2-digit', month: 'long', year: 'numeric' };
-                        const lesbaresDatum = dateObj.toLocaleDateString('de-DE', options);
+                        const lesbaresDatum = dateObj.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' });
 
-                        // Bild holen (Tagesschau liefert verschiedene Größen, wir nehmen 16:9)
                         let imageUrl = '';
                         if (item.teaserImage && item.teaserImage.imageVariants) {
                             imageUrl = item.teaserImage.imageVariants['16x9-512'] || item.teaserImage.imageVariants['16x9-1920'] || '';
                         }
                         let imageHtml = imageUrl ? `<img src="${imageUrl}" alt="Nachrichtenbild" class="news-img">` : '';
 
-                        // Den kurzen Einleitungstext holen und von Rest-Code bereinigen
-                        let textInhalt = item.details || item.firstSentence || "Hier finden Sie die aktuellen Nachrichten der Tagesschau in Einfacher Sprache.";
+                        let textInhalt = item.details || item.firstSentence || "Nachrichten der Tagesschau in Einfacher Sprache.";
                         textInhalt = textInhalt.replace(/<[^>]*>?/gm, '').trim();
 
                         const cardHtml = `
@@ -271,13 +264,12 @@
                                 </div>
                             </div>
                         `;
-                        
                         grid.innerHTML += cardHtml;
                     });
                 })
                 .catch(error => {
-                    console.error('Fehler beim Laden:', error);
-                    document.getElementById('news-grid').innerHTML = '<div id="loading-message" style="color:var(--primary-red); font-weight:bold;">Fehler beim Laden der Nachrichten.</div>';
+                    console.error('Ladefehler:', error);
+                    document.getElementById('news-grid').innerHTML = '<div id="loading-message" style="color:var(--primary-red); font-weight:bold;">Sicherheitsrichtlinien blockieren den Abruf. Bitte manuelle Version nutzen.</div>';
                 });
         }
 
