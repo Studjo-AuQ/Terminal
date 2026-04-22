@@ -71,12 +71,27 @@
             box-sizing: border-box;
         }
 
+        /* --- Neue Überschriften-Zeile mit Foto --- */
+        .page-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Zentriert alles in der Mitte */
+            gap: 15px;               /* Abstand zwischen Text und Bild */
+            margin-bottom: 4px;
+        }
+
         h1 {
             text-align: center;
             color: var(--primary-red);
             font-weight: 700;
-            margin-bottom: 4px;
+            margin: 0;               /* Geändert: Container regelt nun den Abstand */
             padding: 10px;
+        }
+
+        .location-img {
+            height: 48px;            /* Höhe passend zur Schriftgröße */
+            border-radius: 8px;      /* Abgerundete Ecken */
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* Leichter Schatten */
         }
 
         /* --- Wocheninfo-Banner --- */
@@ -357,7 +372,10 @@
     </header>
 
     <main id="readable-content">
-        <h1>Arbeitsbegleitende Angebote</h1>
+        <div class="page-header-row">
+            <h1>Arbeitsbegleitende Angebote</h1>
+            <img src="bst-fbs.jpg" alt="Foto Betriebsstätte Freisenberg" class="location-img">
+        </div>
         <div style="text-align:center; margin-bottom: 8px;">
     <a href="index.html" style="
         display: inline-flex;
