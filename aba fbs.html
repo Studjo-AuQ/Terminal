@@ -71,27 +71,34 @@
             box-sizing: border-box;
         }
 
-        /* --- Neue Überschriften-Zeile mit Foto --- */
-        .page-header-row {
-            display: flex;
-            align-items: center;
-            justify-content: center; /* Zentriert alles in der Mitte */
-            gap: 15px;               /* Abstand zwischen Text und Bild */
-            margin-bottom: 4px;
+       /* --- NEUER KOPFBEREICH: Raster für großes Bild --- */
+        .top-header-area {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr; /* 3 Spalten: Links flexibel, Mitte automatisch, Rechts flexibel */
+            align-items: start; /* Alle Elemente oben bündig ausrichten */
+            margin-bottom: 24px;
         }
 
+        .top-header-text {
+            grid-column: 2; /* Zwingt den Text exakt in die mittlere Spalte */
+            text-align: center;
+        }
+
+        .location-img-large {
+            grid-column: 3; /* Setzt das Bild in die rechte Spalte */
+            justify-self: end; /* Schiebt das Bild ganz nach rechts an den Rand */
+            width: 160px; /* HIER kannst du das Bild vergrößern oder verkleinern (z.B. 140px oder 180px) */
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* Etwas kräftigerer Schatten für das größere Bild */
+        }
+        
         h1 {
             text-align: center;
             color: var(--primary-red);
             font-weight: 700;
-            margin: 0;               /* Geändert: Container regelt nun den Abstand */
-            padding: 10px;
-        }
-
-        .location-img {
-            height: 48px;            /* Höhe passend zur Schriftgröße */
-            border-radius: 8px;      /* Abgerundete Ecken */
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* Leichter Schatten */
+            margin: 0 0 12px 0; /* Abstand nach unten zum Zurück-Button */
+            padding: 0;
         }
 
         /* --- Wocheninfo-Banner --- */
@@ -378,32 +385,43 @@
     </header>
 
     <main id="readable-content">
-        <div class="page-header-row">
-            <h1>Arbeitsbegleitende Angebote</h1>
-            <img src="bst-fbs.jpg" alt="Foto Betriebsstätte Freisenberg" class="location-img">
+        <div class="top-header-area">
+            
+            <div></div> 
+
+            <div class="top-header-text">
+                <h1>Arbeitsbegleitende Angebote</h1>
+                
+                <div style="text-align:center; margin-bottom: 12px;">
+                    <a href="index.html" style="
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 8px;
+                        background-color: white;
+                        color: var(--primary-red);
+                        border: 2px solid var(--primary-red);
+                        border-radius: 999px;
+                        padding: 8px 20px;
+                        font-weight: 700;
+                        font-size: 0.95rem;
+                        text-decoration: none;
+                        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+                        transition: background-color 0.2s, color 0.2s;
+                    "
+                    onmouseover="this.style.backgroundColor='var(--primary-red)';this.style.color='white';"
+                    onmouseout="this.style.backgroundColor='white';this.style.color='var(--primary-red)';">
+                        ← Zurück zur Startseite
+                    </a>
+                </div>
+                
+                <p style="color:var(--secondary-grey); margin:0; font-size:1.0rem; font-weight:500;">
+                    Betriebsstätte Freisenberg – Aktuelle Woche
+                </p>
+            </div>
+
+            <img src="bst-fbs.jpg" alt="Foto Betriebsstätte Freisenberg" class="location-img-large">
+            
         </div>
-        <div style="text-align:center; margin-bottom: 8px;">
-    <a href="index.html" style="
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background-color: white;
-        color: var(--primary-red);
-        border: 2px solid var(--primary-red);
-        border-radius: 999px;
-        padding: 8px 20px;
-        font-weight: 700;
-        font-size: 0.95rem;
-        text-decoration: none;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-        transition: background-color 0.2s, color 0.2s;
-    "
-    onmouseover="this.style.backgroundColor='var(--primary-red)';this.style.color='white';"
-    onmouseout="this.style.backgroundColor='white';this.style.color='var(--primary-red)';">
-        ← Zurück zur Startseite
-    </a>
-</div>
-        <p style="text-align:center;color:var(--secondary-grey);margin-top:0;font-size:0.95rem;">Betriebsstätte Freisenberg – Aktuelle Woche</p>
 
         <div class="week-banner">
             <div class="week-badge" id="week-badge">KW –</div>
