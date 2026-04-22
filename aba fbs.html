@@ -817,8 +817,15 @@ function render() {
         tagDatum.setDate(tagDatum.getDate() + idx);
         const istHeute = tagDatum.toDateString() === heute.toDateString();
 
-        // Angebote für diesen Tag filtern
-        const heutigeAngebote = ANGEBOTE.filter(a => a.wochentag === wt && findetStatt(a, wochenMontag));
+       // Angebote für diesen Tag filtern und nach Uhrzeit (früh nach spät) sortieren
+        const heutigeAngebote = ANGEBOTE.filter(a => a.wochentag === wt && findetStatt(a, wochenMontag))
+            .sort((a, b) => {
+                // Nimmt den ersten Teil des Textes vor dem Leerzeichen (z. B. "10:30" aus "10:30 - 11:00 Uhr")
+                const zeitA = a.zeit.split(' ')[0];
+                const zeitB = b.zeit.split(' ')[0];
+                // Sortiert die Zeiten aufsteigend
+                return zeitA.localeCompare(zeitB);
+            });
 
         const headerStyle = istHeute ? ' style="background-color:#8b161e;"' : '';
         
