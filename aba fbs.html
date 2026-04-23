@@ -464,7 +464,7 @@ function render() {
         const columnClass = istHeute ? 'day-column heute-column' : 'day-column'; 
         
         // NEU: Baut den Titel mit zwei Kreisen und dem Wort "HEUTE"
-        const anzeigeTag = istHeute ? `🟢 HEUTE: ${tagName} 🟢` : tagName;
+        const anzeigeTag = istHeute ? `🟢HEUTE: ${tagName}🟢` : tagName;
 
         daysHtml += `<div class="${columnClass}">
             <div class="day-header"${headerStyle}>${anzeigeTag}<br><span style="font-size:0.8rem;font-weight:400;opacity:0.85">${fmtDate(tagDatum)}</span></div>
