@@ -577,9 +577,16 @@
                     // Zeit bereinigen (Emoji weg, Uhrzeit natürlich machen)
                     zeit = zeit.replace(/🕐/g, '');
                     zeit = zeit.replace(/Uhr/gi, '').replace(/[–-]/g, ' bis ').trim();
-                    zeit = zeit.replace(/:00/g, ' Uhr').replace(/:30/g, ' Uhr 30');
+                    
+                    // Aus :00 wird " Uhr", aus :30 wird " Uhr 30" (für alle Viertelstunden vorbereitet)
+                    zeit = zeit.replace(/:00/g, ' Uhr')
+                               .replace(/:15/g, ' Uhr 15')
+                               .replace(/:30/g, ' Uhr 30')
+                               .replace(/:45/g, ' Uhr 45');
+                    
                     if (zeit !== "" && !zeit.includes("geschlossen") && !zeit.includes("ferien")) {
-                        zeit = `um ${zeit} Uhr`;
+                        // FEHLER BEHOBEN: Wir hängen KEIN zusätzliches " Uhr" mehr ans Ende an!
+                        zeit = `um ${zeit}`;
                     }
 
                     // Notiz bereinigen (Achtung verschoben etc.)
