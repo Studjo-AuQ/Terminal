@@ -580,9 +580,9 @@
                     
                     // Aus :00 wird " Uhr", aus :30 wird " Uhr 30" (für alle Viertelstunden vorbereitet)
                     zeit = zeit.replace(/:00/g, ' Uhr')
-                               .replace(/:15/g, ' Uhr 15')
-                               .replace(/:30/g, ' Uhr 30')
-                               .replace(/:45/g, ' Uhr 45');
+                               .replace(/:15/g, ' Uhr fünfzehn')
+                               .replace(/:30/g, ' Uhr dreißig')
+                               .replace(/:45/g, ' Uhr fünfundvierzig');
                     
                     if (zeit !== "" && !zeit.includes("geschlossen") && !zeit.includes("ferien")) {
                         // FEHLER BEHOBEN: Wir hängen KEIN zusätzliches " Uhr" mehr ans Ende an!
