@@ -85,8 +85,9 @@
 
 <script>
 // =====================================================================
-// DATENBASIS: Alle Arbeitsbegleitenden Angebote (Standort: Werdohl)
-// Startdatum für Rhythmus-Berechnung: 01.04.2026 (KW 14 = GERADE Woche)
+// DATENBASIS: Alle Arbeitsbegleitenden Angebote
+// Betriebsstätte: Werdohl
+// Startdatum für Rhythmus-Berechnung: 01.04.2026 (Mittwoch = KW 14)
 // =====================================================================
 const REFERENZ_DATUM = new Date(2026, 3, 1); // 01.04.2026
 
@@ -94,156 +95,154 @@ const WOCHENTAGE_DE = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Fr
 const WOCHENTAGE_KURZ = ['So','Mo','Di','Mi','Do','Fr','Sa'];
 
 // Alle regelmäßigen Angebote
-// wochentag: 0=So, 1=Mo, 2=Di, 3=Mi, 4=Do, 5=Fr, 6=Sa
 // rhythmus: 'woechentlich' | '14taegig' | 'monatlich'
-// zielgruppe: '' | 'AuTmo' | 'MontagePlus' | 'alle'
-
+// wochentag: 0=So, 1=Mo, 2=Di, 3=Mi, 4=Do, 5=Fr, 6=Sa
+// zielgruppe: '' | 'AuTmo' | 'MontagePlus'
 const ANGEBOTE = [
-    // 1. Mobilität und Verkehrssicherheit (Daten aus Dokument übernommen)
+    // --- MONTAG ---
     {
-        name: 'Mobilität und Verkehrssicherheit', 
-        bild: 'platzhalter_mobilitaet.jpg',
-        wochentag: 1, // Montag
-        zeit: '10:30 – 11:30 Uhr',
-        anbieter: 'Offen', // Steht im Dokument auf Ausfall/Offen
-        treffpunkt: 'Hauswirtschaft',
-        rhythmus: '14taegig',
-        referenzFindet: true, // true = KW14 (gerade Woche) -> Findet in geraden KW statt!
-        kategorie: 'bildung',
-        zielgruppe: ''
-    },
-    // 2. Sport und Bewegung
-    {
-        name: 'Sport und Bewegung', 
-        bild: 'platzhalter_sport.jpg',
-        wochentag: 2, // BITTE ANPASSEN
-        zeit: '00:00 – 00:00 Uhr', // BITTE ANPASSEN
-        anbieter: 'Name', // BITTE ANPASSEN
-        treffpunkt: 'Raum', // BITTE ANPASSEN
-        rhythmus: 'woechentlich',
-        kategorie: 'sport',
-        zielgruppe: ''
-    },
-    // 3. Tischtennis/Kicker
-    {
-        name: 'Tischtennis/Kicker', 
-        bild: 'platzhalter_tischtennis.jpg',
-        wochentag: 3, // BITTE ANPASSEN
-        zeit: '00:00 – 00:00 Uhr', // BITTE ANPASSEN
-        anbieter: 'Name', // BITTE ANPASSEN
-        treffpunkt: 'Raum', // BITTE ANPASSEN
-        rhythmus: 'woechentlich',
-        kategorie: 'sport',
-        zielgruppe: ''
-    },
-    // 4. Spazieren und Bewegung
-    {
-        name: 'Spazieren und Bewegung', 
-        bild: 'platzhalter_spazieren.jpg',
-        wochentag: 4, // BITTE ANPASSEN
-        zeit: '00:00 – 00:00 Uhr', // BITTE ANPASSEN
-        anbieter: 'Name', // BITTE ANPASSEN
-        treffpunkt: 'Raum', // BITTE ANPASSEN
-        rhythmus: 'woechentlich',
-        kategorie: 'sport',
-        zielgruppe: ''
-    },
-    // 5. Spazieren und Bewegung für MontagePlus
-    {
-        name: 'Spazieren und Bewegung', 
-        bild: 'platzhalter_spazieren_mopl.jpg',
-        wochentag: 1, // BITTE ANPASSEN
-        zeit: '00:00 – 00:00 Uhr', // BITTE ANPASSEN
-        anbieter: 'Name', // BITTE ANPASSEN
-        treffpunkt: 'Raum', // BITTE ANPASSEN
+        name: 'Spazieren und Bewegung', bild: 'aba_spazieren.jpg',
+        wochentag: 1,
+        zeit: '10:15 – 11:15 Uhr',
+        anbieter: 'Marianne Rill, Svenja Roß',
+        treffpunkt: 'offen',
         rhythmus: 'woechentlich',
         kategorie: 'sport',
         zielgruppe: 'MontagePlus'
     },
-    // 6. Snoezelen für MontagePlus
+
+    // --- DIENSTAG ---
     {
-        name: 'Snoezelen', 
-        bild: 'platzhalter_snoezelen.jpg',
-        wochentag: 2, // BITTE ANPASSEN
-        zeit: '00:00 – 00:00 Uhr', // BITTE ANPASSEN
-        anbieter: 'Name', // BITTE ANPASSEN
-        treffpunkt: 'Raum', // BITTE ANPASSEN
+        name: 'Sport und Bewegung', bild: 'aba_sport.jpg',
+        wochentag: 2,
+        zeit: '11:00 – 12:00 Uhr',
+        anbieter: 'Enver Ücan',
+        treffpunkt: 'Mehrzweckraum',
+        rhythmus: 'woechentlich',
+        kategorie: 'sport',
+        zielgruppe: ''
+    },
+
+    // --- MITTWOCH ---
+    {
+        name: 'Snoezelen', bild: 'aba_snoezelen.jpg',
+        wochentag: 3,
+        zeit: '10:20 – 11:20 Uhr',
+        anbieter: 'Ramona Metzger-Jung',
+        treffpunkt: 'Snoezel-Raum',
         rhythmus: 'woechentlich',
         kategorie: 'entspan',
         zielgruppe: 'MontagePlus'
     },
-    // 7. Spiel, Spaß und Bewegung für MontagePlus
     {
-        name: 'Spiel, Spaß und Bewegung', 
-        bild: 'platzhalter_spielspass.jpg',
-        wochentag: 3, // BITTE ANPASSEN
-        zeit: '00:00 – 00:00 Uhr', // BITTE ANPASSEN
-        anbieter: 'Name', // BITTE ANPASSEN
-        treffpunkt: 'Raum', // BITTE ANPASSEN
-        rhythmus: 'woechentlich',
-        kategorie: 'sport',
-        zielgruppe: 'MontagePlus'
-    },
-    // 8. Kreatives Gestalten für MontagePlus
-    {
-        name: 'Kreatives Gestalten', 
-        bild: 'platzhalter_kreativ.jpg',
-        wochentag: 4, // BITTE ANPASSEN
-        zeit: '00:00 – 00:00 Uhr', // BITTE ANPASSEN
-        anbieter: 'Name', // BITTE ANPASSEN
-        treffpunkt: 'Raum', // BITTE ANPASSEN
+        name: 'Kreatives Gestalten', bild: 'aba_basteln.jpg',
+        wochentag: 3,
+        zeit: '10:15 – 11:15 Uhr',
+        anbieter: 'Saskia Brühl-Niesius',
+        treffpunkt: 'MoPl-BBB-Raum',
         rhythmus: 'woechentlich',
         kategorie: 'kreativ',
         zielgruppe: 'MontagePlus'
     },
-    // 9. Vorlesen für MontagePlus
     {
-        name: 'Vorlesen', 
-        bild: 'platzhalter_vorlesen.jpg',
-        wochentag: 5, // BITTE ANPASSEN
-        zeit: '00:00 – 00:00 Uhr', // BITTE ANPASSEN
-        anbieter: 'Name', // BITTE ANPASSEN
-        treffpunkt: 'Raum', // BITTE ANPASSEN
+        name: 'Vorlesen', bild: 'aba_vorlesen.jpg',
+        wochentag: 3,
+        zeit: '10:15 – 11:15 Uhr',
+        anbieter: 'Marvin Lingnau',
+        treffpunkt: 'Snoezel-Raum',
         rhythmus: 'woechentlich',
         kategorie: 'bildung',
         zielgruppe: 'MontagePlus'
     },
-    // 10. Vorlesen
     {
-        name: 'Vorlesen', 
-        bild: 'platzhalter_vorlesen_alle.jpg',
-        wochentag: 5, // BITTE ANPASSEN
-        zeit: '00:00 – 00:00 Uhr', // BITTE ANPASSEN
-        anbieter: 'Name', // BITTE ANPASSEN
-        treffpunkt: 'Raum', // BITTE ANPASSEN
+        name: 'Spiele, Farben, Zahlen 1', bild: 'aba_spiele.jpg',
+        wochentag: 3,
+        zeit: '13:00 – 14:00 Uhr',
+        anbieter: 'Melanie Möller',
+        treffpunkt: 'AbA-Raum',
+        rhythmus: '14taegig',
+        referenzFindet: true, // Gruppe 1 findet in der Referenzwoche statt
+        kategorie: 'bildung',
+        zielgruppe: ''
+    },
+    {
+        name: 'Spiele, Farben, Zahlen 2', bild: 'aba_spiele.jpg',
+        wochentag: 3,
+        zeit: '13:00 – 14:00 Uhr',
+        anbieter: 'Melanie Möller',
+        treffpunkt: 'AbA-Raum',
+        rhythmus: '14taegig',
+        referenzFindet: false, // Gruppe 2 findet in der Folgewoche statt
+        kategorie: 'bildung',
+        zielgruppe: ''
+    },
+
+    // --- DONNERSTAG ---
+    {
+        name: 'Spazieren und Bewegung', bild: 'aba_spazieren.jpg',
+        wochentag: 4,
+        zeit: '11:00 – 12:00 Uhr',
+        anbieter: 'Claudia Moldenhauer',
+        treffpunkt: 'offen',
+        rhythmus: 'woechentlich',
+        kategorie: 'sport',
+        zielgruppe: ''
+    },
+    {
+        name: 'Vorlesen', bild: 'aba_vorlesen.jpg',
+        wochentag: 4,
+        zeit: '10:30 – 11:30 Uhr',
+        anbieter: 'Tania Tapper',
+        treffpunkt: 'Kl. Besprechungsraum',
         rhythmus: 'woechentlich',
         kategorie: 'bildung',
         zielgruppe: ''
     },
-    // 11. Spiele, Farben, Zahlen 1 und 2
     {
-        name: 'Spiele, Farben, Zahlen 1 und 2', 
-        bild: 'platzhalter_spiele.jpg',
-        wochentag: 1, // BITTE ANPASSEN
-        zeit: '00:00 – 00:00 Uhr', // BITTE ANPASSEN
-        anbieter: 'Name', // BITTE ANPASSEN
-        treffpunkt: 'Raum', // BITTE ANPASSEN
+        name: 'Spiel, Spaß und Bewegung', bild: 'aba_sport.jpg',
+        wochentag: 4,
+        zeit: '13:15 – 14:15 Uhr',
+        anbieter: 'Erika Stöffer',
+        treffpunkt: 'MoPl-BBB-Raum',
         rhythmus: 'woechentlich',
+        kategorie: 'sport',
+        zielgruppe: 'MontagePlus'
+    },
+
+    // --- FREITAG ---
+    {
+        name: 'Tischtennis / Kicker', bild: 'aba_sport.jpg',
+        wochentag: 5,
+        zeit: '13:00 – 14:00 Uhr',
+        anbieter: 'Federico Lagona',
+        treffpunkt: 'Mehrzweckraum',
+        rhythmus: 'woechentlich',
+        kategorie: 'sport',
+        zielgruppe: ''
+    },
+
+    // --- MONTAG (14-tägig) ---
+    {
+        name: 'Mobilität und Verkehrssicherheit', bild: 'aba_mobil.jpg',
+        wochentag: 1,
+        zeit: '10:30 – 11:30 Uhr',
+        anbieter: 'offen (Ausfall)',
+        treffpunkt: 'Hauswirtschaft',
+        rhythmus: '14taegig',
+        referenzFindet: true,
         kategorie: 'bildung',
         zielgruppe: ''
     }
 ];
 
-// Sonderangebote (Aushang/flexibel/Workshop)
+// Sonderangebote (Termine feststehend oder flexibel)
 const SONDER_ANGEBOTE = [
-    // 12. Andacht (aus dem Dokument)
     {
-        name: 'Andacht', 
-        bild: 'platzhalter_andacht.jpg',
-        anbieter: 'Name', // BITTE ANPASSEN
-        treffpunkt: 'Raum', // BITTE ANPASSEN
-        rhythmus: 'monatlich',
-        info: 'Termine stehen noch nicht fest / per Aushang',
+        name: 'Andacht', bild: 'aba_andacht.jpg',
+        anbieter: 'Birgit Krömer',
+        treffpunkt: 'offen',
+        rhythmus: 'termine',
+        info: '21.05.2026 | 11.06.2026 | 16.09.2026 – jeweils 10:30 Uhr',
         kategorie: 'sozial'
     }
 ];
@@ -255,7 +254,7 @@ const SONDER_ANGEBOTE = [
 /** Gibt Montag der Woche zurück, in der 'datum' liegt */
 function getMontag(datum) {
     const d = new Date(datum);
-    const tag = d.getDay(); 
+    const tag = d.getDay();
     const diff = (tag === 0) ? -6 : 1 - tag;
     d.setDate(d.getDate() + diff);
     d.setHours(0,0,0,0);
@@ -279,7 +278,7 @@ function fmtDate(d) {
 function wochenSeitRef(montag) {
     const refMontag = getMontag(REFERENZ_DATUM);
     const diff = Math.round((montag - refMontag) / (7 * 86400000));
-    return diff; 
+    return diff;
 }
 
 /** Erster Wochentag (z.B. Mittwoch=3) im Monat */
@@ -295,7 +294,6 @@ function findetStatt(angebot, wochenMontag) {
 
     if (angebot.rhythmus === '14taegig') {
         const diff = wochenSeitRef(wochenMontag);
-        // referenzFindet: true = findet in Woche 0, 2, 4, … statt (also in geraden KW, da Ref=KW14)
         const istGleicheParitaet = (diff % 2 === 0);
         return angebot.referenzFindet ? istGleicheParitaet : !istGleicheParitaet;
     }
@@ -384,7 +382,6 @@ function render() {
         tagDatum.setDate(tagDatum.getDate() + idx);
         const istHeute = tagDatum.toDateString() === heute.toDateString();
 
-        // Angebote für diesen Tag filtern und nach Uhrzeit aufsteigend sortieren
         const heutigeAngebote = ANGEBOTE.filter(a => a.wochentag === wt && findetStatt(a, wochenMontag))
             .sort((a, b) => {
                 const zeitA = a.zeit.split(' ')[0];
@@ -393,8 +390,8 @@ function render() {
             });
 
         const headerStyle = istHeute ? ' style="background-color:#8b161e;"' : '';
-        const columnClass = istHeute ? 'day-column heute-column' : 'day-column'; 
-        const anzeigeTag = istHeute ? `🟢 HEUTE: ${tagName} 🟢` : tagName;
+        const columnClass = istHeute ? 'day-column heute-column' : 'day-column';
+        const anzeigeTag = istHeute ? `HEUTE: ${tagName} 🟢` : tagName;
 
         daysHtml += `<div class="${columnClass}">
             <div class="day-header"${headerStyle}>${anzeigeTag}<br><span style="font-size:0.8rem;font-weight:400;opacity:0.85">${fmtDate(tagDatum)}</span></div>
@@ -413,11 +410,13 @@ function render() {
 
     document.getElementById('days-grid').innerHTML = daysHtml;
 
-    // Sonderangebote Rendern
+    // Sonderangebote
     let specialHtml = '';
     SONDER_ANGEBOTE.forEach(a => {
         const cardClass = 'special-card';
-        const notizHtml = a.notiz ? `<div class="sc-note">ℹ️ ${a.notiz}</div>` : '';
+
+        const notizHtml = a.notiz
+            ? `<div class="sc-note">ℹ️ ${a.notiz}</div>` : '';
 
         specialHtml += `
             <div class="${cardClass}">
@@ -438,6 +437,110 @@ function render() {
 
     document.getElementById('special-grid').innerHTML = specialHtml;
 }
+
+// =====================================================================
+// VORLESEN
+// =====================================================================
+let isSpeaking = false;
+let aktuelleAussage = null;
+
+function vorlesenUndMarkieren() {
+    if (isSpeaking || window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+        entferneAlleMarkierungen();
+        isSpeaking = false;
+        return;
+    }
+    window.speechSynthesis.cancel();
+    isSpeaking = true;
+
+    const elementeZumVorlesen = [];
+
+    // 1. Hauptüberschrift
+    const h1 = document.querySelector('h1');
+    if (h1) elementeZumVorlesen.push({ text: h1.innerText, element: h1 });
+
+    // 2. Die heutige Spalte direkt und zielsicher über die CSS-Klasse greifen!
+    const heuteSpalte = document.querySelector('.heute-column');
+
+    if (heuteSpalte) {
+        let tagesName = heuteSpalte.querySelector('.day-header').innerText.split('\n')[0];
+        tagesName = tagesName.replace(/🟢/g, '').replace(/HEUTE:/g, '').trim();
+
+        elementeZumVorlesen.push({ text: `Heute ist ${tagesName}. Es gibt heute folgende Angebote:`, element: null });
+
+        const angeboteHeute = heuteSpalte.querySelectorAll('.offer-card');
+
+        if (angeboteHeute.length === 0) {
+            elementeZumVorlesen.push({ text: 'Heute finden leider keine Angebote statt.', element: null });
+        } else {
+            angeboteHeute.forEach(card => {
+                let name = card.querySelector('.offer-name')?.innerText || '';
+                let zeit = card.querySelector('.offer-time')?.innerText || '';
+
+                if (name) {
+                    zeit = zeit.replace(/🕐/g, '');
+                    
+                    let sprechZeit = zeit.replace(/Uhr/gi, '')
+                                         .replace(/[–-]/g, ' bis ')
+                                         .trim();
+                    
+                    sprechZeit = sprechZeit.replace(/:00/g, ' Uhr')
+                                           .replace(/:15/g, ' Uhr 15')
+                                           .replace(/:30/g, ' Uhr 30')
+                                           .replace(/:45/g, ' Uhr 45');
+
+                    let sprechText = `${name} ist von ${sprechZeit}.`;
+
+                    elementeZumVorlesen.push({ text: sprechText, element: card });
+                }
+            });
+        }
+    } else {
+        elementeZumVorlesen.push({ text: 'Heute ist Wochenende. Es finden keine regelmäßigen Angebote statt.', element: null });
+    }
+
+    // 3. Vorlesen starten
+    if (elementeZumVorlesen.length > 0) spieleSequenz(elementeZumVorlesen, 0);
+    else isSpeaking = false;
+}
+
+function spieleSequenz(elemente, index) {
+    if (index >= elemente.length || !isSpeaking) {
+        entferneAlleMarkierungen();
+        isSpeaking = false;
+        return;
+    }
+    const abschnitt = elemente[index];
+    aktuelleAussage = new SpeechSynthesisUtterance(abschnitt.text);
+    aktuelleAussage.lang = 'de-DE';
+    aktuelleAussage.rate = 0.9;
+    aktuelleAussage.onstart = () => {
+        entferneAlleMarkierungen();
+        if (abschnitt.element) abschnitt.element.classList.add('is-reading');
+    };
+    aktuelleAussage.onend = () => {
+        setTimeout(() => spieleSequenz(elemente, index + 1), 150);
+    };
+    aktuelleAussage.onerror = () => {
+        entferneAlleMarkierungen();
+        isSpeaking = false;
+    };
+    window.speechSynthesis.speak(aktuelleAussage);
+}
+
+function entferneAlleMarkierungen() {
+    document.querySelectorAll('.is-reading').forEach(el => el.classList.remove('is-reading'));
+}
+
+// Service Worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
+// Starten
+render();
+
 
 // =====================================================================
 // VORLESEN
