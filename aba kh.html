@@ -86,7 +86,9 @@
 <script>
 // =====================================================================
 // DATENBASIS: Alle Arbeitsbegleitenden Angebote
+// Betriebsstätte: Kerkhagen (KH)
 // Startdatum für Rhythmus-Berechnung: 01.04.2026 (Mittwoch = KW 14)
+// 14-tägige Angebote ohne weitere Vorgabe: gerade Kalenderwochen
 // =====================================================================
 const REFERENZ_DATUM = new Date(2026, 3, 1); // 01.04.2026
 
@@ -94,219 +96,59 @@ const WOCHENTAGE_DE = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Fr
 const WOCHENTAGE_KURZ = ['So','Mo','Di','Mi','Do','Fr','Sa'];
 
 // Alle regelmäßigen Angebote
-// rhythmus: 'woechentlich' | '14taegig_ungerade' | '14taegig_gerade' | 'monatlich_1' | 'monatlich_2' | ...
+// rhythmus: 'woechentlich' | '14taegig' | 'monatlich'
 // wochentag: 0=So, 1=Mo, 2=Di, 3=Mi, 4=Do, 5=Fr, 6=Sa
-// zielgruppe: '' | 'AuTmo' | 'MontagePlus'
+// zielgruppe: '' | 'AuTmo' | 'MontagePlus' | 'alle'
 const ANGEBOTE = [
-    // --- MONTAG ---
-    {
-        name: 'Dart', bild: 'aba_dart.jpg',
-        wochentag: 1,
-        zeit: '13:00 – 14:00 Uhr',
-        anbieter: 'Sebastian Q.',
-        treffpunkt: 'Teilzeit-Gruppenraum',
-        rhythmus: 'woechentlich',
-        kategorie: 'sport',
-        zielgruppe: ''
-    },
-    {
-        name: 'Basteln', bild: 'aba_basteln.jpg',
-        wochentag: 1,
-        zeit: '10:30 – 11:45 Uhr',
-        anbieter: 'Claudia M., Katrin S.',
-        treffpunkt: 'Gr. Besprechungsraum',
-        rhythmus: 'woechentlich',
-        kategorie: 'kreativ',
-        zielgruppe: ''
-    },
-    {
-        name: 'Natur erleben – Kreatives Gestalten', bild: 'aba_naturkreativ.jpg',
-        wochentag: 1,
-        zeit: '10:00 – 11:00 Uhr',
-        anbieter: 'Lena D.',
-        treffpunkt: 'Garten MontagePlus',
-        rhythmus: 'woechentlich',
-        kategorie: 'kreativ',
-        zielgruppe: ''
-    },
-    {
-        name: 'Zirkus', bild: 'aba_zirkus.jpg',
-        wochentag: 1,
-        zeit: '10:00 – 11:00 Uhr',
-        anbieter: 'Joel K.',
-        treffpunkt: 'Gruppenraum AuTmo',
-        rhythmus: 'woechentlich',
-        kategorie: 'sport',
-        zielgruppe: 'AuTmo'
-    },
     // --- DIENSTAG ---
     {
         name: 'Mobilität und Verkehrssicherheit', bild: 'aba_mobil.jpg',
         wochentag: 2,
         zeit: '10:30 – 11:30 Uhr',
-        anbieter: 'Egor H.',
+        anbieter: 'Egor H., Marina S.',
+        treffpunkt: 'Freisenberg: Besprechungsraum',
+        rhythmus: 'woechentlich',
+        kategorie: 'bildung',
+        zielgruppe: '',
+        notiz: 'Transport durch GL zum Freisenberg'
+    },
+    {
+        name: 'Gesprächskreis – Wochenaktuelles', bild: 'aba_sozial.jpg',
+        wochentag: 2,
+        zeit: '10:30 – 12:00 Uhr',
+        anbieter: 'Eric S.',
         treffpunkt: 'Besprechungsraum',
         rhythmus: 'woechentlich',
         kategorie: 'bildung',
         zielgruppe: ''
-    },
-    {
-        name: 'Bewegung und Tanz', bild: 'aba_bewegungtanz.jpg',
-        wochentag: 2,
-        zeit: '13:00 – 14:00 Uhr',
-        anbieter: 'Ines B.',
-        treffpunkt: 'AuTmo 1',
-        rhythmus: 'woechentlich',
-        kategorie: 'sport',
-        zielgruppe: 'AuTmo'
-    },
-    {
-        name: 'Entspannung 1', bild: 'aba_entspannung.jpg',
-        wochentag: 2,
-        zeit: '13:15 – 14:15 Uhr',
-        anbieter: 'Meggy R.',
-        treffpunkt: 'Snoezel-Raum',
-        rhythmus: 'woechentlich',
-        kategorie: 'entspan',
-        zielgruppe: ''
-    },
-    {
-        name: 'Kreatives Gestalten', bild: 'aba_basteln.jpg',
-        wochentag: 2,
-        zeit: '13:30 – 14:00 Uhr',
-        anbieter: 'Sarah R.',
-        treffpunkt: 'MoPl Nebenraum',
-        rhythmus: 'woechentlich',
-        kategorie: 'kreativ',
-        zielgruppe: 'MontagePlus'
-    },
-    {
-        name: 'Spazieren und Bewegung', bild: 'aba_spazieren.jpg',
-        wochentag: 2,
-        zeit: '13:00 – 14:00 Uhr',
-        anbieter: 'Lisa R., Nikolaos A.',
-        treffpunkt: 'MontagePlus-Gruppenraum',
-        rhythmus: '14taegig',
-        // Referenz: 01.04.2026 ist KW14 → KW14 ist "ungerade" Woche (1. Woche ab Ref.) → findet statt
-        // Findet statt in ungeraden Wochen (Woche 1, 3, 5, … ab Referenz)
-        referenzFindet: true, // true = findet in der Woche der Referenz statt
-        kategorie: 'sport',
-        zielgruppe: 'MontagePlus'
-    },
-    {
-        name: 'Vorlesen', bild: 'aba_vorlesen.jpg',
-        wochentag: 2,
-        zeit: '13:15 – 14:15 Uhr',
-        anbieter: 'Thomas H.',
-        treffpunkt: 'Gr. Besprechungsraum',
-        rhythmus: 'woechentlich',
-        kategorie: 'bildung',
-        zielgruppe: ''
-    },
-    // --- MITTWOCH ---
-    {
-        name: 'Snoezelen', bild: 'aba_snoezelen.jpg',
-        wochentag: 3,
-        zeit: '13:00 – 14:00 Uhr',
-        anbieter: 'Josch F.',
-        treffpunkt: 'Snoezel-Raum',
-        rhythmus: 'woechentlich',
-        kategorie: 'entspan',
-        zielgruppe: 'AuTmo'
-    },
-    {
-        name: 'Nachhaltigkeit und Umwelt', bild: 'aba_umwelt.jpg',
-        wochentag: 3,
-        zeit: '13:00 – 14:00 Uhr',
-        anbieter: 'Gerhard G.',
-        treffpunkt: 'Teilzeit-Gruppenraum',
-        rhythmus: 'monatlich',
-        // findet an dem Mittwoch statt, der am nächsten beim 1. des Monats liegt (1. Mi im Monat)
-        monatlichTag: 'erster_wochentag', // 1. Mittwoch im Monat
-        kategorie: 'bildung',
-        zielgruppe: ''
-    },
-    {
-        name: 'Entspannung 2', bild: 'aba_entspannung.jpg',
-        wochentag: 3,
-        zeit: '11:00 – 12:00 Uhr',
-        anbieter: 'Melanie W.',
-        treffpunkt: 'Snoezel-Raum',
-        rhythmus: 'woechentlich',
-        kategorie: 'entspan',
-        zielgruppe: ''
-    },
-    
-    // --- DONNERSTAG ---
-        {
-        name: 'Chor', bild: 'aba_chor.jpg',
-        wochentag: 4,
-        zeit: '13:00 – 14:00 Uhr',
-        anbieter: 'Markus H., Christian J.',
-        treffpunkt: 'Gr. Besprechungsraum',
-        rhythmus: 'woechentlich',
-        kategorie: 'musik',
-        zielgruppe: ''
-    },
-    // --- FREITAG ---
-    {
-        name: 'Walken', bild: 'aba_walken.jpg',
-        wochentag: 5,
-        zeit: '10:30 – 12:00 Uhr',
-        anbieter: 'Andreas F., Andreas H.',
-        treffpunkt: 'Eingangsbereich',
-        rhythmus: 'woechentlich',
-        kategorie: 'sport',
-        zielgruppe: ''
-    },
-    {
-        name: 'Vorlesen', bild: 'aba_vorlesen.jpg',
-        wochentag: 5,
-        zeit: '10:30 – 11:00 Uhr',
-        anbieter: 'Giulio C.',
-        treffpunkt: 'Snoezel-Raum',
-        rhythmus: 'woechentlich',
-        kategorie: 'bildung',
-        zielgruppe: 'MontagePlus'
-    },
-    {
-        name: 'Disco', bild: 'aba_disco.jpg',
-        wochentag: 5,
-        zeit: '12:00 – 13:00 Uhr',
-        anbieter: '',
-        treffpunkt: 'Flur',
-        rhythmus: 'woechentlich',
-        kategorie: 'musik',
-        zielgruppe: 'alle'
     }
 ];
 
-// Sonderangebote (Aushang/flexibel/Workshop)
+// Sonderangebote (Aushang / feste Termine / unregelmäßig)
 const SONDER_ANGEBOTE = [
     {
-        name: 'Erste-Hilfe und Brandschutz', bild: 'aba_erstehilfe.jpg',
-        anbieter: 'Fabian F., Willi H.',
-        treffpunkt: 'Gr. Besprechungsraum',
-        rhythmus: 'monatlich',
-        info: 'Termine stehen noch nicht fest',
-        kategorie: 'sicherheit'
+        name: 'Achtsamkeit und Entspannung', bild: 'aba_entspannung.jpg',
+        anbieter: 'Natascha K.',
+        treffpunkt: 'Besprechungsraum',
+        rhythmus: 'aushang',
+        info: '4× wöchentlich | 11:40 – 12:00 Uhr – Termin per Aushang',
+        kategorie: 'entspan'
     },
-        {
-        name: 'Andacht', bild: 'aba_andacht.jpg',
-        anbieter: 'Birgit K.',
-        treffpunkt: 'Gr. Besprechungsraum',
-        rhythmus: 'alle3monate',
-        info: 'Alle 3 Monate – Termin per Aushang',
+    {
+        name: 'Regionales Kulturprogramm', bild: 'aba_spazieren.jpg',
+        anbieter: 'Alexander D.',
+        treffpunkt: 'Rund um Lüdenscheid',
+        rhythmus: 'monatlich',
+        info: 'Monatlich – Termin per Aushang',
         kategorie: 'sozial'
     },
     {
-        name: 'Tanzworkshop', bild: 'aba_tanzworkshop.jpg',
-        anbieter: 'Thomas W.',
-        treffpunkt: 'Kulturwerkstatt Alte Schule',
-        rhythmus: 'workshop',
-        info: '19.05.2026 – 29.05.2026 | 9:00–15:30 Uhr',
-        notiz: '🎪 Aufführung im Zirkuszelt am 29.05.2026 um 19:30 Uhr',
-        kategorie: 'musik'
+        name: 'Gesprächskreis – Gott und die Welt', bild: 'aba_andacht.jpg',
+        anbieter: 'Birgit K.',
+        treffpunkt: 'Speisesaal',
+        rhythmus: 'termine',
+        info: '07.05. | 02.06. | 13.08. | 10.09. | 08.10. | 12.11. | 10.12.2026 – jeweils 09:00 Uhr',
+        kategorie: 'sozial'
     }
 ];
 
@@ -317,7 +159,7 @@ const SONDER_ANGEBOTE = [
 /** Gibt Montag der Woche zurück, in der 'datum' liegt */
 function getMontag(datum) {
     const d = new Date(datum);
-    const tag = d.getDay(); // 0=So, 1=Mo, …
+    const tag = d.getDay();
     const diff = (tag === 0) ? -6 : 1 - tag;
     d.setDate(d.getDate() + diff);
     d.setHours(0,0,0,0);
@@ -337,14 +179,7 @@ function fmtDate(d) {
     return d.getDate().toString().padStart(2,'0') + '.' + (d.getMonth()+1).toString().padStart(2,'0') + '.';
 }
 
-/** Anzahl der vollen Wochen seit REFERENZ_DATUM */
-function wochenSeitRef(montag) {
-    const refMontag = getMontag(REFERENZ_DATUM);
-    const diff = Math.round((montag - refMontag) / (7 * 86400000));
-    return diff; // 0 = Referenzwoche, 1 = nächste Woche, …
-}
-
-/** Erster Wochentag (z.B. Mittwoch=3) im Monat */
+/** Erster Wochentag im Monat */
 function ersterWochentagImMonat(jahr, monat, wochentag) {
     const d = new Date(jahr, monat, 1);
     while (d.getDay() !== wochentag) d.setDate(d.getDate() + 1);
@@ -356,14 +191,12 @@ function findetStatt(angebot, wochenMontag) {
     if (angebot.rhythmus === 'woechentlich') return true;
 
     if (angebot.rhythmus === '14taegig') {
-        const diff = wochenSeitRef(wochenMontag);
-        // referenzFindet: true = findet in Woche 0, 2, 4, … statt
-        const istGleicheParitaet = (diff % 2 === 0);
-        return angebot.referenzFindet ? istGleicheParitaet : !istGleicheParitaet;
+        const kw = getKW(wochenMontag);
+        const istGeradeKW = (kw % 2 === 0);
+        return angebot.referenzFindet ? !istGeradeKW : istGeradeKW;
     }
 
     if (angebot.rhythmus === 'monatlich') {
-        // Findet am 1. Wochentag des Monats statt
         const tagDatum = new Date(wochenMontag);
         tagDatum.setDate(tagDatum.getDate() + (angebot.wochentag === 0 ? 6 : angebot.wochentag - 1));
         const erster = ersterWochentagImMonat(tagDatum.getFullYear(), tagDatum.getMonth(), angebot.wochentag);
@@ -405,6 +238,9 @@ function renderOfferCard(angebot) {
     const bildHtml = angebot.bild
         ? `<img src="${angebot.bild}" alt="${angebot.name}" class="offer-img">` : '';
 
+    const notizHtml = angebot.notiz
+        ? `<div class="offer-anbieter" style="color:#b07000;">ℹ️ ${angebot.notiz}</div>` : '';
+
     return `
         <div class="offer-card cat-${angebot.kategorie}">
             <div class="offer-card-inner">
@@ -413,12 +249,13 @@ function renderOfferCard(angebot) {
                     <div class="offer-time">🕐 ${angebot.zeit}</div>
                     ${anbieterHtml}
                     <div class="offer-time">📍 ${angebot.treffpunkt}</div>
-                    
+                    ${notizHtml}
+
                     <div class="offer-bottom-row">
                         <span class="offer-badge">${KATEGORIE_LABELS[angebot.kategorie] || angebot.kategorie}</span>
                         ${bildHtml}
                     </div>
-                    
+
                 </div>
             </div>
         </div>`;
@@ -447,22 +284,15 @@ function render() {
         tagDatum.setDate(tagDatum.getDate() + idx);
         const istHeute = tagDatum.toDateString() === heute.toDateString();
 
-       // Angebote für diesen Tag filtern und nach Uhrzeit (früh nach spät) sortieren
         const heutigeAngebote = ANGEBOTE.filter(a => a.wochentag === wt && findetStatt(a, wochenMontag))
             .sort((a, b) => {
-                // Nimmt den ersten Teil des Textes vor dem Leerzeichen (z. B. "10:30" aus "10:30 - 11:00 Uhr")
                 const zeitA = a.zeit.split(' ')[0];
                 const zeitB = b.zeit.split(' ')[0];
-                // Sortiert die Zeiten aufsteigend
                 return zeitA.localeCompare(zeitB);
             });
 
         const headerStyle = istHeute ? ' style="background-color:#8b161e;"' : '';
-        
-        // NEU: Gibt der Spalte eine Extraklaase "heute-column", wenn heute ist
-        const columnClass = istHeute ? 'day-column heute-column' : 'day-column'; 
-        
-        // NEU: Baut den Titel mit zwei Kreisen und dem Wort "HEUTE"
+        const columnClass = istHeute ? 'day-column heute-column' : 'day-column';
         const anzeigeTag = istHeute ? `HEUTE: ${tagName} 🟢` : tagName;
 
         daysHtml += `<div class="${columnClass}">
@@ -483,22 +313,12 @@ function render() {
     document.getElementById('days-grid').innerHTML = daysHtml;
 
     // Sonderangebote
-    // Tanzworkshop: ist er diese Woche?
-    const tanzStart = new Date(2026, 4, 19); // 19.05.2026
-    const tanzEnde  = new Date(2026, 4, 29); // 29.05.2026
-    const freitagDatum = new Date(wochenMontag); freitagDatum.setDate(freitagDatum.getDate() + 4);
-    const isTanzWoche = wochenMontag <= tanzEnde && freitagDatum >= tanzStart;
-
     let specialHtml = '';
     SONDER_ANGEBOTE.forEach(a => {
-        const isWorkshop = a.rhythmus === 'workshop';
-        const hervorgehoben = isWorkshop && isTanzWoche;
-        const cardClass = hervorgehoben ? 'special-card upcoming' : 'special-card';
+        const cardClass = 'special-card';
 
         const notizHtml = a.notiz
             ? `<div class="sc-note">ℹ️ ${a.notiz}</div>` : '';
-        const hervorHtml = hervorgehoben
-            ? `<div class="sc-note" style="background:#ffebee;color:#b71c1c;font-weight:700">🔥 Findet diese Woche statt!</div>` : '';
 
         specialHtml += `
             <div class="${cardClass}">
@@ -507,6 +327,7 @@ function render() {
                     ${a.kategorie === 'entspan'    ? '<span class="target-badge" style="background:#f3e5f5;color:#6a1b9a">Entspannung</span>' : ''}
                     ${a.kategorie === 'sozial'     ? '<span class="target-badge" style="background:#e0f2f1;color:#00695c">Gemeinschaft</span>' : ''}
                     ${a.kategorie === 'musik'      ? '<span class="target-badge" style="background:#fce4ec;color:#880e4f">Musik & Tanz</span>' : ''}
+                    ${a.kategorie === 'bildung'    ? '<span class="target-badge" style="background:#e1f5fe;color:#01579b">Bildung</span>' : ''}
                 </h3>
                 <div class="sc-detail">
                     ${a.anbieter ? '👤 ' + a.anbieter + '<br>' : ''}
@@ -514,7 +335,6 @@ function render() {
                     🗓️ ${a.info}
                 </div>
                 ${notizHtml}
-                ${hervorHtml}
             </div>`;
     });
 
